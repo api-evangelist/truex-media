@@ -1,0 +1,32 @@
+# TrueX (true[X]) — Truex Media
+
+> TrueX is an interactive, opt-in video advertising company, now part of Infillion.
+> Its integration surface is the TruexAdRenderer (TAR) client SDK for CTV, OTT,
+> mobile, and web — published first-party from the "socialvibe" GitHub organization
+> for iOS, tvOS, Android, Roku, and CTV/HTML5 web via Swift Package Manager and
+> CocoaPods. TrueX is an SDK provider, not a public REST API.
+
+## Company
+- Website: https://infillion.com
+- TrueX product: https://infillion.com/products/infillion-truex/
+- Blog: https://infillion.com/blog/
+- Resources: https://infillion.com/resources/
+- Contact / Support: https://infillion.com/contact/
+- Privacy Policy: https://infillion.com/privacy-policy/
+- Backed by (historical): Redpoint Ventures (as SocialVibe)
+
+## Source Code & SDKs
+- GitHub organization: https://github.com/socialvibe
+- TruexAdRenderer iOS (Swift Package): https://github.com/socialvibe/TruexAdRenderer-iOS-Swift-Package
+- TruexAdRenderer tvOS (Swift Package): https://github.com/socialvibe/TruexAdRenderer-tvOS-Swift-Package
+- CocoaPods spec repo: https://github.com/socialvibe/cocoapod-specs
+- Android integrations: https://github.com/socialvibe/truex-android-integrations
+- Roku reference app: https://github.com/socialvibe/truex-roku-reference-app
+- CTV web (HTML5) reference app: https://github.com/socialvibe/truex-ctv-web-reference-app
+
+## Documentation
+- Mobile integrations (wiki / getting started): https://github.com/socialvibe/truex-mobile-integrations/wiki
+- Ad production docs: https://github.com/socialvibe/truex-ads-docs
+
+## Repo Artifacts
+- Packages / SDKs: packages/truex-media-packages.yml

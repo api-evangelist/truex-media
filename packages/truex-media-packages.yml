@@ -1,0 +1,54 @@
+generated: '2026-07-21'
+method: searched
+source: https://github.com/socialvibe
+notes: >-
+  TrueX (true[X], org "socialvibe" on GitHub) distributes its integration
+  surface as the TruexAdRenderer (TAR) client SDK for connected-TV, mobile,
+  and web ad rendering — not as a REST API. Packages below are first-party,
+  published from the socialvibe org (org display name "true[X]",
+  org blog http://www.truex.com). Exact registry version strings are only
+  recorded where verified; distribution repos are linked verbatim.
+packages:
+  - language: swift
+    platform: ios
+    registry: swift-package-manager
+    name: TruexAdRenderer (iOS)
+    url: https://github.com/socialvibe/TruexAdRenderer-iOS-Swift-Package
+    install: Add package https://github.com/socialvibe/TruexAdRenderer-iOS-Swift-Package in Xcode (SPM)
+    official: true
+  - language: swift
+    platform: tvos
+    registry: swift-package-manager
+    name: TruexAdRenderer (tvOS)
+    url: https://github.com/socialvibe/TruexAdRenderer-tvOS-Swift-Package
+    install: Add package https://github.com/socialvibe/TruexAdRenderer-tvOS-Swift-Package in Xcode (SPM)
+    official: true
+  - language: objective-c
+    platform: ios
+    registry: cocoapods
+    name: TruexAdRenderer (CocoaPods)
+    url: https://github.com/socialvibe/cocoapod-specs
+    install: Use the true[X] private CocoaPods spec repo (socialvibe/cocoapod-specs)
+    version: 3.0.3
+    official: true
+  - language: java
+    platform: android
+    registry: github
+    name: TruexAdRenderer (Android)
+    url: https://github.com/socialvibe/truex-android-integrations
+    install: See socialvibe/truex-android-integrations Getting Started guide
+    official: true
+  - language: brightscript
+    platform: roku
+    registry: github
+    name: TruexAdRenderer (Roku)
+    url: https://github.com/socialvibe/truex-roku-reference-app
+    install: Integrate per the Roku reference channel (socialvibe/truex-roku-reference-app)
+    official: true
+  - language: javascript
+    platform: ctv-web
+    registry: github
+    name: TruexAdRenderer (CTV Web / HTML5)
+    url: https://github.com/socialvibe/truex-ctv-web-reference-app
+    install: See socialvibe/truex-ctv-web-reference-app (HTML5/JS integration)
+    official: true

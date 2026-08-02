@@ -1,8 +1,31 @@
 aid: truex-media
+accessModel:
+  pricing: unknown
+  onboarding: unknown
+  trial: false
+  try_now: false
+  public: false
+  label: Unknown
+  confidence: low
+  source: []
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/truex-media.png
 name: Truex Media
-description: Truex Media is a company surfaced as a portfolio company of redpoint-ventures and added to
-  the API Evangelist network as a stub for enrichment. This profile is a lead awaiting the enrichment
-  pipeline.
+description: >-
+  TrueX (stylized true[X]) is an interactive, opt-in video advertising company
+  now operating as part of Infillion. Its technology delivers "attention-based"
+  ad experiences — Choice Cards and interactive engagement units that let
+  viewers opt in to a single, longer branded interaction in exchange for an
+  ad-free content break — across connected TV (CTV), over-the-top (OTT), mobile,
+  and web. The company originated as SocialVibe (a Redpoint Ventures portfolio
+  company), was acquired by 21st Century Fox, and is now a video advertising
+  product within Infillion alongside MediaMath, InStadium, Gimbal, and Catalina.
+  TrueX's integration surface is the TruexAdRenderer (TAR) client SDK — published
+  first-party from the "socialvibe" GitHub organization for iOS, tvOS, Android,
+  Roku, and CTV/HTML5 web via Swift Package Manager and CocoaPods — rather than a
+  public REST API. Publishers embed the renderer, typically alongside Google IMA
+  (client- or server-side ad insertion), to serve and measure interactive ads.
 url: https://raw.githubusercontent.com/api-evangelist/truex-media/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
@@ -12,12 +35,45 @@ x-tier: stub
 x-tier-reason: portfolio-lead
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-21'
 tags:
 - Company
+- Advertising
+- AdTech
+- Video Advertising
+- Connected TV
+- Interactive Advertising
+- SDK
+- Mobile
 apis: []
+common:
+- type: DomainSecurity
+  url: security/truex-media-domain-security.yml
+- type: Website
+  url: https://infillion.com
+- type: GitHubOrganization
+  url: https://github.com/socialvibe
+- type: Documentation
+  url: https://github.com/socialvibe/truex-mobile-integrations/wiki
+- type: Blog
+  url: https://infillion.com/blog/
+- type: Support
+  url: https://infillion.com/contact/
+- type: PrivacyPolicy
+  url: https://infillion.com/privacy-policy/
+- type: Packages
+  url: packages/truex-media-packages.yml
+- type: SDKs
+  url: packages/truex-media-packages.yml
+- type: LLMsTxt
+  url: llms/truex-media-llms.txt
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+x-enrichment:
+  date: '2026-07-21'
+  status: enriched
+  artifacts_added: 3
+  pass: local-v1
