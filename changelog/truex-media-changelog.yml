@@ -1,0 +1,156 @@
+generated: '2026-08-12'
+method: searched
+source: >-
+  https://github.com/socialvibe/truex-ctv-web-reference-app/blob/master/CHANGELOG.md,
+  the socialvibe GitHub releases API, the @truex npm scope publish times, and
+  https://s3.amazonaws.com/android.truex.com/tar/prod/maven maven-metadata.xml.
+scope: sdk-releases
+scope_note: >-
+  HONEST SCOPING — true[X] publishes no API changelog. Neither the Web Service
+  Ad API nor the Reporting API has a dated release note anywhere on truex.com or
+  infillion.com, and neither has changed version since /v2 and /v1 respectively.
+  What is captured here is the SDK release history, which is the only dated,
+  provider-published change record that exists: renderer package releases across
+  five registries plus one hand-maintained CHANGELOG.md in the CTV web reference
+  app. Recent window only.
+versioning_scheme: semver (per SDK package); uri-path major version (per API)
+current_versions:
+  web_service_ad_api: v2
+  reporting_api: v1
+  ctv_web_renderer: 1.12.7
+  vega_renderer: 0.8.3
+  ios_renderer: 4.1.0
+  tvos_renderer: 3.15.3
+  android_renderer: 2.10.4
+  roku_renderer: 1.2.0
+entries:
+- version: TruexAdRenderer tvOS 3.15.3
+  date: '2026-06-15'
+  surface: tvos
+  type: release
+  breaking: false
+  source: https://github.com/socialvibe/TruexAdRenderer-tvOS-Swift-Package/releases
+- version: '@truex/ad-renderer-vega 0.8.3'
+  date: '2026-02-09'
+  surface: vega-os
+  type: release
+  breaking: false
+  highlights:
+  - Fourth release of the Amazon Vega OS renderer, first published 2025-11-02.
+  source: https://www.npmjs.com/package/@truex/ad-renderer-vega
+- version: '@truex/ad-renderer-vega 0.7.1'
+  date: '2025-12-04'
+  surface: vega-os
+  type: release
+  breaking: false
+- version: '@truex/ad-renderer 1.12.7'
+  date: '2025-09-22'
+  surface: ctv-web
+  type: release
+  breaking: false
+  note: >-
+    Latest CTV/web renderer. The web integration reference still documents
+    1.12.5.
+  source: https://www.npmjs.com/package/@truex/ad-renderer
+- version: com.truex:TruexAdRenderer-Android 2.10.4
+  date: '2025-08-07'
+  surface: android
+  type: release
+  breaking: false
+  note: >-
+    Published to the true[X] Maven repository. The Android integration reference
+    still instructs 2.8.2.
+  source: https://s3.amazonaws.com/android.truex.com/tar/prod/maven
+- version: TruexAdRenderer iOS 4.1.0
+  date: '2025-06-10'
+  surface: ios
+  type: release
+  breaking: true
+  breaking_note: >-
+    Major version bump from the 3.5.x line. No migration note is published; the
+    iOS-DOCS.md reference still describes "Version 3.2".
+  source: https://github.com/socialvibe/TruexAdRenderer-iOS-Swift-Package/releases
+- version: TruexAdRenderer tvOS 3.15.2
+  date: '2025-06-10'
+  surface: tvos
+  type: release
+  breaking: false
+- version: '@truex/ad-renderer 1.12.6'
+  date: '2024-09-05'
+  surface: ctv-web
+  type: release
+  breaking: false
+- version: TruexAdRenderer tvOS 3.14.1
+  date: '2024-11-06'
+  surface: tvos
+  type: release
+  breaking: false
+- version: TruexAdRenderer iOS 3.5.1
+  date: '2024-10-21'
+  surface: ios
+  type: release
+  breaking: false
+- version: '@truex/ad-renderer 1.12.5'
+  date: '2024-03-06'
+  surface: ctv-web
+  type: release
+  breaking: false
+  note: The version pinned in the provider's own web integration reference.
+- version: TruexAdRenderer iOS 3.4.0
+  date: '2024-07-22'
+  surface: ios
+  type: release
+  breaking: false
+- version: js-ad-api deprecations
+  date: '2020-06'
+  surface: js-ad-api
+  type: deprecation
+  breaking: false
+  highlights:
+  - network_user_id superseded by user.id
+  - partner_config_hash superseded by placement_hash / placement.key
+  - loadActivityIntoContainer superseded by loadAdIntoContainer
+  - openActivityWindow superseded by openAdWindow
+  - prepareActivity superseded by prepareAd
+  - trackImpression superseded by trackTriggerPointImpression
+  note: >-
+    The only dated change record the API documentation itself carries. Declared
+    permanently backward compatible — no removal has been scheduled since.
+  source: https://github.com/socialvibe/truex-ads-docs/blob/master/js_ad_api.md
+- version: '@truex/js-ad-client 0.0.13'
+  date: '2020-04-30'
+  surface: web
+  type: release
+  breaking: false
+  note: Final release of the packaged JS client; no publish in over six years.
+reference_app_changelog:
+  file: https://github.com/socialvibe/truex-ctv-web-reference-app/blob/master/CHANGELOG.md
+  current: v1.7.1
+  format: Keep-a-Changelog style, undated
+  limitation: >-
+    Entries carry a version and a one-line summary but NO DATES, so they cannot
+    be placed on a timeline. Recorded as a source, not as dated entries.
+  recent:
+  - version: v1.7.1
+    summary: migrate to fastly CDN for ctv.truex.com
+  - version: v1.7.0
+    summary: set cache-control header on all uploaded files
+  - version: v1.6.0
+    summary: use updated "Evergreen" ads for the demo
+  - version: v1.5.0
+    summary: use latest TAR to support release/1-5-0
+  - version: v1.4.0
+    summary: fix midroll stream_id to allow Skip cards
+  - version: v1.2.0
+    summary: add AndroidTV support
+  - version: v1.1.2
+    summary: add PS5 support
+  - version: v1.1.1
+    summary: add LG support
+  - version: v1.1.0
+    summary: add Tizen support
+gaps:
+- No changelog for either HTTP API.
+- No release notes, upgrade guides or migration notes for the iOS 3.x to 4.x major bump.
+- The one hand-maintained CHANGELOG.md carries no dates.
+- No RSS/Atom feed or subscribable change notification for any surface.

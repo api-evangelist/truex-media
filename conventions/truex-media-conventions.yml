@@ -1,0 +1,165 @@
+generated: '2026-08-12'
+method: searched
+source: >-
+  https://github.com/socialvibe/truex-ads-docs (web_service_ad_api.md,
+  reporting_api.md, js_ad_api.md, query_param_reference.md) plus live
+  unauthenticated responses observed from get.truex.com and api.truex.com on
+  2026-08-12. No OpenAPI is published, so nothing here is derived from a spec.
+authentication:
+  style: query-string credentials
+  detail: >-
+    Reporting uses api_key as a query parameter; ad requests are identified by
+    placement.key. No Authorization header is used on either true[X] API. See
+    authentication/truex-media-authentication.yml.
+  reference: authentication/truex-media-authentication.yml
+transport:
+  protocol: HTTPS
+  http_documented: >-
+    The Reporting API reference documents http:// URLs. The host answers 301 to
+    https and serves HSTS-less TLS 1.2; integrators should call https directly.
+  methods:
+  - GET
+  content_types:
+  - application/json
+  - text/csv
+  cors:
+    enabled: true
+    observed_headers:
+      access-control-allow-origin: '*'
+      access-control-allow-credentials: 'true'
+      access-control-allow-headers: Authorization
+    observed_on: https://get.truex.com/v2
+versioning:
+  scheme: uri-path
+  detail: >-
+    Each surface pins its major version in the path. The Web Service Ad API is
+    at /v2 (a /v1 predecessor is referenced in older integration docs); the
+    Reporting API is at /v1. There is no version header, no date-pinned version
+    train and no published version-support window.
+  current:
+    web_service_ad_api: v2
+    reporting_api: v1
+  reference: lifecycle/truex-media-lifecycle.yml
+error_envelope:
+  format: proprietary JSON
+  rfc9457: false
+  shape:
+    error: Human-readable error string.
+    request_id: Opaque per-request identifier, present on both success and error.
+    fillable: Boolean, ad-request surface only — whether the placement was fillable.
+  examples:
+  - 'HTTP 400 {"error":"partner_config_hash is missing","request_id":"..."}'
+  - 'HTTP 200 {"error":"No bid found","fillable":false,"request_id":"..."}'
+  - 'HTTP 401 401 Unauthorized: Invalid API key   (text/plain, not JSON)'
+  inconsistency: >-
+    The two surfaces do not share an envelope. The ad API returns JSON with an
+    error key; the Reporting API returns a plain-text body on 401. The ad API
+    also returns HTTP 200 for the no-fill case with an error key in the body,
+    so a client cannot rely on status code alone.
+  reference: errors/truex-media-error-codes.yml
+request_tracing:
+  supported: true
+  ad_api:
+    field: request_id
+    location: response body
+    note: Returned on every Web Service Ad API response, success or error.
+  reporting_api:
+    header: X-Request-Id
+    also: X-Runtime
+    note: Emitted by the Rails application fronting api.truex.com.
+  correlation_ids:
+  - session_id — assigned by true[X] per ad session, returned in the ad object
+  - engagement_id — assigned by true[X] per completed engagement, sent on the callback
+idempotency:
+  supported: partial
+  scope: server-to-server engagement callback only
+  key: engagement_id
+  header: null
+  detail: >-
+    true[X] publishes a real at-least-once delivery contract on its engagement
+    callback and a dedupe key to go with it. Callbacks are retried when the
+    partner returns response code 0 (recoverable failure), and the reference
+    instructs the partner that "if a non-unique engagement_id is passed to the
+    partner, the request should be ignored and return a failure code ... to
+    avoid over-crediting a user" — response code 3, which is explicitly not
+    retried. engagement_id is therefore a documented idempotency key with
+    documented duplicate-suppression semantics.
+  limitation: >-
+    HONEST SCOPING — this contract runs in the callback direction only. Neither
+    the Web Service Ad API nor the Reporting API accepts an Idempotency-Key or
+    any client-supplied deduplication token, and neither documents safe-retry
+    semantics for a caller. Both are GET-only and therefore naturally safe to
+    retry, but that is a property of the verb, not a published contract.
+  retention: not published
+  source: https://github.com/socialvibe/truex-ads-docs/blob/master/web_service_ad_api.md
+pagination:
+  supported: false
+  detail: >-
+    Neither API paginates. The Reporting API returns the whole date range in a
+    single JSON object keyed by placement key, then day, then campaign id, with
+    no cursor, offset, limit or link header. Volume is bounded by the requested
+    start_date/end_date range, which is the only lever a caller has.
+filtering:
+  reporting_api:
+  - start_date (YYYY-MM-DD, required)
+  - end_date (YYYY-MM-DD, optional, defaults to today)
+  ad_api_targeting:
+  - age
+  - yob
+  - gender
+  - dimension_1 .. dimension_5
+  - coppa
+  note: >-
+    dimension_1 through dimension_5 are five free-form targetable metadata slots
+    — the provider's substitute for a typed custom-attribute model.
+field_expansion:
+  supported: false
+sparse_fieldsets:
+  supported: false
+metadata:
+  supported: true
+  mechanism: dimension_1 .. dimension_5 query parameters on the ad request
+  typed: false
+content_negotiation:
+  mechanism: file extension
+  detail: >-
+    The Reporting API selects its representation by path suffix —
+    performance.json versus performance.csv — rather than by an Accept header.
+rate_limit_signaling:
+  headers_observed: none
+  documented: false
+  reference: rate-limits/truex-media-rate-limits.yml
+privacy_conventions:
+  coppa:
+    parameter: coppa
+    values:
+    - '1'
+    - '0'
+    detail: Pass 1 if the user is under 13; prevents data storing.
+  user_identity:
+    parameter: user.id
+    formerly: network_user_id
+    guidance: >-
+      Partner-provided alphanumeric string uniquely identifying the current
+      user; the platform advertising ID is recommended where supported.
+  cookies:
+    detail: >-
+      The ad endpoint sets a network_user_id cookie scoped to .truex.com with a
+      ten-year expiry, SameSite=None; Secure. The separate conversion pixel at
+      engage.truex.com/c.gif is documented as cookie-based and as non-functional
+      in Safari because of third-party cookie blocking.
+event_naming:
+  detail: >-
+    Client-side tracking across every renderer uses a consistent three-field
+    shape — category, name, value — with nine fixed categories (timing,
+    multimedia, navigation, external_page, click, other, share, data_entry,
+    aggregate, debug). Choice-card event categories are composed as
+    fep_<platform>_<config-name>.
+  reference: asyncapi/truex-media-webhooks.yml
+cross_links:
+  authentication: authentication/truex-media-authentication.yml
+  errors: errors/truex-media-error-codes.yml
+  lifecycle: lifecycle/truex-media-lifecycle.yml
+  rate_limits: rate-limits/truex-media-rate-limits.yml
+  webhooks: asyncapi/truex-media-webhooks.yml
+  data_model: data-model/truex-media-data-model.yml

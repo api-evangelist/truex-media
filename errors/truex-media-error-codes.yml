@@ -1,0 +1,153 @@
+generated: '2026-08-12'
+method: searched
+source: >-
+  https://github.com/socialvibe/truex-ads-docs (web_service_ad_api.md,
+  reporting_api.md, js_ad_api.md) and the renderer references in
+  truex-android-integrations, truex-roku-integrations and
+  truex-ad-renderer-web-integration, plus live unauthenticated responses
+  observed from get.truex.com and api.truex.com on 2026-08-12.
+format: proprietary
+rfc9457: false
+note: >-
+  true[X] publishes no error-code registry and no problem-details media type.
+  This catalog is assembled from the error responses the provider documents,
+  the responses observed live from its own hosts, and the terminal error events
+  its renderers emit. Every entry is either quoted from the docs or from an
+  observed response — none is inferred.
+envelope:
+  ad_api:
+    content_type: application/json
+    fields:
+      error: Human-readable error string.
+      request_id: Opaque per-request identifier.
+      fillable: Boolean; present on no-fill responses.
+  reporting_api:
+    content_type: text/plain
+    note: >-
+      The Reporting API does not use a JSON envelope for auth failures; it
+      returns a plain-text body.
+errors:
+- id: missing-placement-key
+  api: truex-media-web-service-ad-api
+  status: 400
+  body: '{"error":"partner_config_hash is missing","request_id":"..."}'
+  title: Placement key missing
+  cause: >-
+    The request omitted the required placement identifier. Note the wire error
+    still names the deprecated parameter partner_config_hash even though the
+    current reference documents the parameter as placement.key.
+  remediation: Send placement.key with the placement identifier issued by true[X].
+  method: probed
+  evidence:
+    url: https://get.truex.com/v2
+    http_status: 400
+    fetched: '2026-08-12'
+- id: no-bid-found
+  api: truex-media-web-service-ad-api
+  status: 200
+  body: '{"error":"No bid found","fillable":false,"request_id":"..."}'
+  title: No ad available
+  cause: >-
+    No true[X] ad is available for this user and placement. Documented in the
+    reference as the expected empty result — '{"error": "No bid found"}' — and
+    it is returned with HTTP 200, not an error status.
+  remediation: >-
+    Treat as a normal no-fill. Do not show a trigger point; waterfall to the
+    next ad source. Branch on the presence of the error key, not on the status
+    code.
+  method: probed
+  evidence:
+    url: https://get.truex.com/v2?placement.key=<invalid>&user.id=<test>
+    http_status: 200
+    fetched: '2026-08-12'
+- id: invalid-api-key
+  api: truex-media-reporting-api
+  status: 401
+  body: '401 Unauthorized: Invalid API key'
+  title: Invalid reporting API key
+  cause: The api_key query parameter is absent, malformed, or not recognized.
+  remediation: >-
+    Supply the partner-specific reporting API key issued by true[X]. The same
+    401 is returned whether the key is missing or wrong.
+  method: probed
+  evidence:
+    url: https://api.truex.com/v1/publisher/performance.json
+    http_status: 401
+    fetched: '2026-08-12'
+- id: mcp-missing-authorization
+  api: infillion-agent-connector-mcp
+  status: 401
+  body: '{"error": "Missing Authorization header"}'
+  title: MCP request unauthenticated
+  cause: >-
+    A request reached the Infillion Agent Connector gateway without a bearer
+    token.
+  remediation: >-
+    Complete the OAuth 2.1 authorization-code + PKCE flow advertised at
+    https://mcp.infillion.com/.well-known/oauth-authorization-server and retry
+    with the access token.
+  method: probed
+  evidence:
+    url: https://mcp.infillion.com/mcp
+    http_status: 401
+    fetched: '2026-08-12'
+callback_response_codes:
+  surface: server-to-server engagement callback (partner endpoint -> true[X])
+  direction: >-
+    These are the codes the PARTNER returns to true[X], not codes true[X]
+    returns. They are the retry contract for engagement callbacks.
+  codes:
+  - code: 0
+    meaning: Recoverable failure
+    action: true[X] will retry the request.
+  - code: 1
+    meaning: Callback successfully processed
+    action: No retry.
+  - code: 2
+    meaning: Invalid signature
+    action: >-
+      true[X] is notified for investigation. Indicates the HMAC-SHA1 sig did not
+      validate against the partner's application_secret.
+  - code: 3
+    meaning: Invalid user or duplicate engagement_id
+    action: >-
+      The request will not be retried. This is the documented
+      duplicate-suppression path that prevents over-crediting a user.
+  source: https://github.com/socialvibe/truex-ads-docs/blob/master/web_service_ad_api.md
+renderer_error_events:
+  note: >-
+    Client-side renderer failures do not surface as HTTP errors; they surface as
+    terminal ad events the host application must handle. Both are documented as
+    terminal — the host must resume its own video playback.
+  events:
+  - name: adError
+    platforms:
+    - web
+    - roku
+    - ios
+    - tvos
+    android_name: AD_ERROR
+    ios_name: onAdError
+    terminal: true
+    payload: errorMessage
+    handling: >-
+      Treat as an exception, remove the ad container, and resume normal
+      playback.
+  - name: noAdsAvailable
+    platforms:
+    - web
+    - roku
+    - ios
+    - tvos
+    android_name: NO_ADS_AVAILABLE
+    ios_name: onNoAdsAvailable
+    terminal: true
+    handling: Resume the normal ad break; no true[X] ad was returned.
+  js_client_event: onError
+  source: https://github.com/socialvibe/truex-ad-renderer-web-integration/blob/master/DOCS.md
+gaps:
+- No stable machine-readable error code or type URI on any response.
+- No error registry page; errors must be discovered from live responses.
+- The no-fill case is an HTTP 200 carrying an error key.
+- Auth failure on the Reporting API is text/plain, not the JSON envelope used elsewhere.
+- The wire error still names a parameter (partner_config_hash) the reference deprecated in 2020.

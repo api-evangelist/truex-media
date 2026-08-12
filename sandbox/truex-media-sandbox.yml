@@ -1,0 +1,166 @@
+generated: '2026-08-12'
+method: searched
+source: >-
+  https://github.com/socialvibe/truex-ads-docs (web_service_ad_api.md,
+  js_ad_api.md, query_param_reference.md) and the socialvibe reference
+  applications. Every value below is published verbatim by the provider; none is
+  invented.
+summary: >-
+  true[X] separates test from live by HOST and by BUILD rather than by key
+  prefix. There is a QA ad endpoint alongside production, a .test.js build of
+  the JavaScript client alongside the production build, and a documented set of
+  engagement query parameters that force specific targeting, timing and
+  tracking behaviour for demos. There is no self-service sandbox signup — a
+  test placement key still has to come from a true[X] contact.
+test_live_separation:
+  mechanism: separate host + separate build
+  key_prefixes: none
+  modes: none
+  note: >-
+    Unlike key-prefixed providers, true[X] issues no distinguishable test
+    credential. The placement key is the same shape in both environments, so a
+    client cannot tell from the credential which environment it is calling.
+environments:
+- name: production
+  ad_api: https://get.truex.com/v2
+  js_client: https://static.truex.com/js/client.js
+  reporting_api: https://api.truex.com/v1
+- name: qa
+  ad_api: https://qa-get.truex.com/v2
+  js_client: https://static.truex.com/js/client.test.js
+  reporting_api: null
+  note: >-
+    A QA reporting host is not published. The QA ad endpoint behaves like
+    production for an unauthenticated caller — an anonymous GET returns HTTP 400
+    with the same {"error":"partner_config_hash is missing"} envelope.
+  verified:
+    url: https://qa-get.truex.com/v2
+    http_status: 400
+    fetched: '2026-08-12'
+credentials:
+  self_service: false
+  detail: >-
+    A placement key (placement_hash), an application_key and an
+    application_secret are all "provided by true[X]" during the integration
+    phase. There is no signup page, no developer console and no key-issuance
+    endpoint. The reporting api_key is likewise partner-specific and manually
+    provisioned.
+sample_values:
+  note: >-
+    The provider's own reference includes one example placement key in the
+    sample Web Service Ad API request. It is published in public documentation
+    and is not a secret, but it is not repeated here — read it from the
+    reference. Probed against the live endpoint on 2026-08-12 it returns
+    {"error":"No bid found","fillable":false}, so it is not a working fixture.
+  reference: https://github.com/socialvibe/truex-ads-docs/blob/master/web_service_ad_api.md
+test_query_parameters:
+  usage: Append to engagement serve.truex.com URLs, e.g. &debug=true
+  reference: https://github.com/socialvibe/truex-ads-docs/blob/master/query_param_reference.md
+  parameters:
+  - name: debug
+    values:
+    - 'true'
+    description: Enables debug output.
+  - name: test_player
+    values:
+    - 'true'
+    description: >-
+      Loads the container in a test player with play/pause/mute/fullscreen
+      controls.
+  - name: test_placement_id
+    values:
+    - PLACEMENT ID
+    description: Sets the placement ID; useful for testing placement-ID tag restriction.
+  - name: test_campaign_id
+    values:
+    - CAMPAIGN ID
+    description: Sets the campaign ID; useful for testing campaign-ID tag restriction.
+  - name: test_start_date
+    values:
+    - MM/DD/YYYY
+    description: Sets a start date on a debug link; tests start-date tag restriction.
+  - name: test_end_date
+    values:
+    - MM/DD/YYYY
+    description: Sets an end date on a debug link; tests end-date tag restriction.
+  - name: test_variant
+    values:
+    - A
+    - B
+    description: Sets a variant; tests variant tag restriction.
+  - name: cap_type
+    values:
+    - value_added_units
+    description: Sets the campaign unit type; tests Added Value tag restriction.
+  - name: true_attention_seconds
+    values:
+    - SECONDS
+    description: >-
+      Overrides the True Attention threshold, so a tester does not have to wait
+      the full 30 seconds for the credit event.
+  - name: fire_tracking
+    values:
+    - 'true'
+    description: Enables firing of third-party tracking pixels.
+  - name: disable_surveys
+    values:
+    - 'true'
+    description: Disables Qualtrics and Vizu surveys from running.
+  - name: has_autoplay_intro_video
+    values:
+    - 'true'
+    description: >-
+      Tells the container the creative has an autoplay intro video so it can
+      detect browser autoplay blocking and show a click-to-play step.
+time_simulation:
+  supported: partial
+  mechanism: true_attention_seconds
+  detail: >-
+    There is no test-clock API, but true_attention_seconds shortens the 30-second
+    credit threshold, which is the one time-dependent behaviour in the product.
+    test_start_date and test_end_date simulate campaign flight windows.
+  limitation: Client-side only; does not affect reporting or billing records.
+hosted_demos:
+- name: Integration sandbox (CodeSandbox)
+  url: https://codesandbox.io/s/truex-integration-sandbox-h9co6
+  surface: js-ad-api
+  source: https://github.com/socialvibe/truex-ads-docs/blob/master/js_ad_api.md
+- name: Roku example game
+  url: https://github.com/socialvibe/Roku-Example-Game
+  surface: roku
+fixture_applications:
+  note: >-
+    The provider's substitute for a sandbox is a large set of runnable reference
+    applications, one per platform and ad-server pairing. These are the
+    fixtures.
+  apps:
+  - https://github.com/socialvibe/truex-ctv-web-reference-app
+  - https://github.com/socialvibe/truex-ctv-google-ima-csai-ref-app
+  - https://github.com/socialvibe/truex-ctv-google-ima-ssai-ref-app
+  - https://github.com/socialvibe/truex-android-ctv-reference-app
+  - https://github.com/socialvibe/truex-android-google-ima-csai-ref-app
+  - https://github.com/socialvibe/truex-android-google-ima-ssai-ref-app
+  - https://github.com/socialvibe/truex-android-mobile-reference-app
+  - https://github.com/socialvibe/truex-ios-reference-app
+  - https://github.com/socialvibe/truex-ios-google-ima-csai-ref-app
+  - https://github.com/socialvibe/truex-tvos-reference-app
+  - https://github.com/socialvibe/truex-tvos-reference-app-simple
+  - https://github.com/socialvibe/truex-tvos-reference-app-cocoapods
+  - https://github.com/socialvibe/truex-tvos-google-ad-manager-reference-app
+  - https://github.com/socialvibe/truex-roku-reference-app
+  - https://github.com/socialvibe/truex-roku-csai-reference-app
+  - https://github.com/socialvibe/truex-roku-raf-csai-reference-app
+  - https://github.com/socialvibe/truex-roku-google-ad-manager-reference-app
+  - https://github.com/socialvibe/truex-vega-reference-app
+  - https://github.com/socialvibe/Tinkerbell
+  - https://github.com/socialvibe/truex-google-ima-idvx-simid-ref-app
+sample_tags:
+  note: >-
+    The connected-device reference publishes example sponsored-stream and
+    sponsored-ad-break VAST tags hosted at stash.truex.com over plain http.
+  reference: https://github.com/socialvibe/truex-ads-docs/blob/master/connected_device_vast_wrapper_query_args.md
+gaps:
+- No self-service test credential; every key comes from a human at true[X].
+- No test-mode indicator on the credential itself.
+- No QA host published for the Reporting API.
+- No documented fixture that reliably returns a filled ad, so the happy path cannot be exercised without a live campaign.

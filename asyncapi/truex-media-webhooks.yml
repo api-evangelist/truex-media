@@ -1,0 +1,267 @@
+generated: '2026-08-12'
+method: searched
+source: >-
+  https://github.com/socialvibe/truex-ads-docs (web_service_ad_api.md,
+  js_ad_api.md, engagement_interaction_tracking.md, choice_card_event_tracking.md,
+  choice_card_vpaid_events.md, conversion_pixel.md) and the renderer references
+  in truex-ad-renderer-web-integration, truex-android-integrations and
+  truex-roku-integrations.
+spec_type: none
+asyncapi_published: false
+asyncapi_note: >-
+  true[X] publishes no AsyncAPI document. No /asyncapi.yaml, /asyncapi.json or
+  event-catalog endpoint answered on any truex.com or infillion.com host, and
+  the socialvibe GitHub organization contains no AsyncAPI file. NOT FABRICATED —
+  what is captured below is the provider's real, documented event surface in its
+  own terms: one server-to-server HTTP callback plus several client-side event
+  streams.
+webhooks:
+- name: engagement_callback
+  type: server-to-server HTTP callback
+  direction: true[X] -> partner
+  trigger: >-
+    Fired when a user successfully completes an engagement (True Attention is
+    met — typically 30 seconds spent plus at least one interaction).
+  endpoint: >-
+    Partner-supplied callback URL, registered with true[X] during the
+    integration phase. There is no self-service webhook management surface.
+  transport: HTTP GET with query parameters
+  delivery: >-
+    Generally real time, but may be delayed depending on current load. At-least-
+    once: a partner response of 0 causes true[X] to retry.
+  signing:
+    algorithm: HMAC-SHA1
+    parameter: sig
+    key: application_secret
+    canonicalization: >-
+      key=value pairs sorted alphabetically by key, concatenated with no
+      separator, application_secret appended, base64 encoded, URL escaped.
+  deduplication:
+    key: engagement_id
+    contract: >-
+      "If a non-unique engagement_id is passed to the partner, the request
+      should be ignored and return a failure code to avoid over-crediting a
+      user." The partner returns code 3, and true[X] does not retry.
+  source_ip_allowlist:
+    published: true
+    note: >-
+      true[X] publishes eight egress IP addresses and states that all external
+      calls except those from the allowlist are blocked. Addresses are not
+      copied here; read them from the reference, which is the authoritative and
+      current list.
+  payload:
+  - field: application_key
+    type: string
+    description: The partner-specific application key provided by true[X].
+  - field: network_user_id
+    type: string
+    description: Partner-provided identifier for the user who completed the ad.
+  - field: currency_amount
+    type: int
+    description: Amount of publisher currency earned by completing the ad.
+  - field: currency_label
+    type: string
+    description: Label of the currency used, e.g. "coins".
+  - field: revenue
+    type: decimal
+    description: Revenue earned by the partner for this engagement, up to 8 decimal places.
+  - field: placement_hash
+    type: string
+    description: Identifier hash of the placement this engagement originated from.
+  - field: campaign_name
+    type: string
+  - field: campaign_id
+    type: string
+  - field: creative_name
+    type: string
+  - field: creative_id
+    type: string
+  - field: engagement_id
+    type: string
+    description: Unique true[X]-generated identifier for this engagement; the dedupe key.
+  - field: sig
+    type: string
+    description: HMAC-SHA1 signature of the signed request.
+  responses:
+    reference: errors/truex-media-error-codes.yml
+    codes:
+    - 0 recoverable failure (retried)
+    - 1 processed
+    - 2 invalid signature
+    - 3 invalid user or duplicate engagement_id (not retried)
+  source: https://github.com/socialvibe/truex-ads-docs/blob/master/web_service_ad_api.md
+client_event_streams:
+- name: js_client_ad_events
+  transport: JavaScript callbacks on the ad object
+  library: https://static.truex.com/js/client.js
+  events:
+  - name: onStart
+    description: The ad is loaded and the user can begin interacting.
+  - name: onCredit
+    description: >-
+      The billing event. Fired once the user has spent 30 seconds and interacted
+      at least once. Yields an engagement object.
+  - name: onClose
+    description: The ad window was closed; fires independently of onFinish and onCredit.
+  - name: onFinish
+    description: The ad is fully complete and the user reached the end.
+  - name: onMessage
+    description: Custom messages from the engagement unit.
+    payloads:
+    - true_targeting_started
+    - true_targeting_complete
+    - ad_passback
+  - name: onError
+    description: An error occurred with the ad; treat as an exception.
+  - name: onClickthrough
+    description: >-
+      Mobile only; fires when handle_clickthrough_manually is true, yielding the
+      clickthrough URL for the host app to process.
+  source: https://github.com/socialvibe/truex-ads-docs/blob/master/js_ad_api.md
+- name: truexadrenderer_events
+  transport: renderer callbacks (subscribe / delegate / observeField per platform)
+  platforms:
+    web: '@truex/ad-renderer — tar.subscribe(handler)'
+    android: TruexAdEvent enum via IEventEmitter
+    roku: TruexAdRenderer node output events
+    ios_tvos: TruexAdRendererDelegate methods
+  terminal_events:
+  - adCompleted
+  - adError
+  - noAdsAvailable
+  - userCancelStream
+  events:
+  - name: adFetchCompleted
+    android: AD_FETCH_COMPLETED
+    ios: onFetchAdComplete
+  - name: adStarted
+    android: AD_STARTED
+    ios: onAdStarted
+  - name: adDisplayed
+    android: AD_DISPLAYED
+  - name: adCompleted
+    android: AD_COMPLETED
+    ios: onAdCompleted
+    terminal: true
+  - name: adError
+    android: AD_ERROR
+    ios: onAdError
+    terminal: true
+  - name: noAdsAvailable
+    android: NO_ADS_AVAILABLE
+    ios: onNoAdsAvailable
+    terminal: true
+  - name: adFreePod
+    android: AD_FREE_POD
+    ios: onAdFreePod
+    description: The user did sufficient interaction to earn an ad credit; skip the pod.
+  - name: userCancelStream
+    android: USER_CANCEL_STREAM
+    terminal: true
+  - name: optIn
+    android: OPT_IN
+    ios: onOptIn
+  - name: optOut
+    android: OPT_OUT
+    ios: onOptOut
+  - name: skipCardShown
+    android: SKIP_CARD_SHOWN
+    ios: onSkipCardShown
+  - name: userCancel
+    android: USER_CANCEL
+    ios: onUserCancel
+  - name: popupWebsite
+    android: POPUP_WEBSITE
+    ios: onPopupWebsite
+  - name: adsAvailable
+    ios: onAdsAvailable
+    platforms:
+    - roku
+    - ios
+  - name: xtendedViewStarted
+    platforms:
+    - web
+  - name: videoEvent
+    platforms:
+    - roku
+  source: https://github.com/socialvibe/truex-ad-renderer-web-integration/blob/master/DOCS.md
+- name: vpaid_adinteraction_events
+  transport: VPAID AdInteraction events dispatched from the choice card ad flow
+  events:
+  - TrueXChoiceCardLoaded
+  - TrueXSkipCardLoaded
+  - TrueXNoAdLoaded
+  - TrueXUserOptIn
+  - TrueXUserOptOut
+  - TrueXUserTimeOut
+  - TrueXClosedAfterCredit
+  - TrueXClosedBeforeCredit
+  - TrueXCredit
+  source: https://github.com/socialvibe/truex-ads-docs/blob/master/choice_card_vpaid_events.md
+- name: interaction_tracking
+  transport: tracking beacons emitted by the ad container / renderer
+  shape:
+    category: One of ten fixed categories.
+    name: The action being taken.
+    value: Optional additional context or a millisecond timing value.
+    step: The step in which the interaction took place.
+    user_initiated: Whether the interaction came from a user input.
+  categories:
+  - timing
+  - multimedia
+  - navigation
+  - external_page
+  - click
+  - other
+  - share
+  - data_entry
+  - aggregate
+  - debug
+  standard_events:
+  - timing/initial
+  - timing/total_time_spent
+  - timing/true_attention_time_met
+  - timing/true_attention_interaction_met
+  - timing/continue_to_end
+  - timing/creative_completion
+  - click/interaction
+  - debug/heart_beat
+  source: https://github.com/socialvibe/truex-ads-docs/blob/master/engagement_interaction_tracking.md
+- name: choice_card_events
+  transport: tracking beacons from the FEP choice card trigger point
+  category_convention: fep_<platform>_<choice_card_config_name>
+  required_events:
+  - player_load
+  - player_no_load
+  - player_ad_free
+  - choice_card_select_unit
+  - choice_card_select_watch
+  - choice_card_auto_advance
+  - choice_card_re-select_unit
+  optional_events:
+  - choice_card_debug
+  - choice_card_error
+  - select_back
+  - unit_closed_by_x_after_credit
+  - unit_closed_by_x_before_credit
+  - unit_load
+  - unit_credit
+  - unit_first_interaction
+  - unit_time_met
+  source: https://github.com/socialvibe/truex-ads-docs/blob/master/choice_card_event_tracking.md
+tracking_pixels:
+- name: conversion_pixel
+  url_template: https://engage.truex.com/c.gif?value=LABEL
+  mechanism: >-
+    Drops a cookie when a user completes an engagement; a later fire of the
+    pixel on the advertiser's site records a conversion event.
+  limitation: >-
+    Safari blocks third-party cross-site cookies, so the pixel does not work
+    there; the provider states it should not be used on mobile campaigns.
+  source: https://github.com/socialvibe/truex-ads-docs/blob/master/conversion_pixel.md
+gaps:
+- No AsyncAPI, CloudEvents or event-schema document of any kind.
+- Callback URL registration is manual, via a true[X] contact — no webhook management API.
+- No published delivery-retry schedule, backoff policy or dead-letter behavior.
+- No signature algorithm modernization; HMAC-SHA1 is the only documented option.
+- No replay or redelivery endpoint for missed callbacks.

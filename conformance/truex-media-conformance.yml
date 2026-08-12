@@ -1,0 +1,178 @@
+generated: '2026-08-12'
+method: searched
+source: >-
+  https://github.com/socialvibe/truex-ads-docs, the TruexAdRenderer integration
+  references in the socialvibe org, and live probes of get.truex.com,
+  api.truex.com and mcp.infillion.com on 2026-08-12. No OpenAPI is published,
+  so nothing here is derived from a spec.
+note: >-
+  true[X] publishes no compliance or certification program — no SOC 2, ISO
+  27001, PCI DSS, HIPAA or FedRAMP claim was found on infillion.com or
+  truex.com, and no trust center exists. NO `Compliance` POINTER IS EMITTED for
+  this repo, per the rule that Conformance alone does not award the
+  compliance_published check. What is recorded below is standards conformance,
+  which for an ad-tech company means the IAB advertising standards far more than
+  the web-API standards.
+standards:
+- id: iab-vast
+  name: IAB VAST (Video Ad Serving Template)
+  conforms: true
+  evidence: >-
+    The integration references instruct publishers to detect a VAST ad whose
+    <AdSystem> element has the value "trueX", and true[X] delivers its choice
+    card through a VAST wrapper with a documented VASTAdTagURI query-parameter
+    contract. Reference apps ship for Google Ad Manager/IMA and FreeWheel.
+  source: https://github.com/socialvibe/truex-ad-renderer-web-integration/blob/master/DOCS.md
+- id: iab-vpaid
+  name: IAB VPAID
+  conforms: true
+  evidence: >-
+    A documented set of nine TrueX AdInteraction events is dispatched from the
+    choice card flow (TrueXChoiceCardLoaded, TrueXUserOptIn, TrueXCredit and
+    others), and vpaid_integration_sab.md documents the sponsored-ad-break VPAID
+    integration.
+  source: https://github.com/socialvibe/truex-ads-docs/blob/master/choice_card_vpaid_events.md
+- id: iab-simid
+  name: IAB SIMID (Secure Interactive Media Interface Definition)
+  conforms: true
+  evidence: >-
+    First-party reference application truex-google-ima-idvx-simid-ref-app
+    demonstrates SIMID IDVx interactive true[X] ads through the Google IMA SDK
+    for Web.
+  source: https://github.com/socialvibe/truex-google-ima-idvx-simid-ref-app
+- id: ssai-csai
+  name: Server-side and client-side ad insertion
+  conforms: true
+  evidence: >-
+    Separate reference applications for CSAI and SSAI on Android, CTV web, iOS
+    and Roku; the renderer is explicitly designed to defer to the host app's
+    existing ad server and delivery mechanism.
+- id: coppa
+  name: COPPA signalling
+  conforms: partial
+  evidence: >-
+    The Web Service Ad API accepts a coppa parameter ('1' or '0') documented as
+    "Pass '1' if the user is under 13. Prevents data storing." This is a
+    transport-level signal the publisher must set; true[X] publishes no COPPA
+    compliance attestation.
+  source: https://github.com/socialvibe/truex-ads-docs/blob/master/web_service_ad_api.md
+- id: oauth2
+  name: OAuth 2.0 / 2.1
+  conforms: partial
+  scope: infillion-agent-connector-mcp only
+  evidence: >-
+    mcp.infillion.com serves a compliant RFC 8414 authorization server metadata
+    document and issues an RFC 6750 Bearer challenge. The true[X] APIs
+    themselves use no OAuth.
+  source: https://mcp.infillion.com/.well-known/oauth-authorization-server
+- id: rfc8414
+  name: RFC 8414 OAuth 2.0 Authorization Server Metadata
+  conforms: true
+  scope: infillion-agent-connector-mcp only
+  evidence: >-
+    200 at /.well-known/oauth-authorization-server with issuer,
+    authorization_endpoint, token_endpoint, registration_endpoint,
+    grant_types_supported, response_types_supported and
+    code_challenge_methods_supported.
+- id: rfc9728
+  name: RFC 9728 OAuth 2.0 Protected Resource Metadata
+  conforms: true
+  scope: infillion-agent-connector-mcp only
+  evidence: >-
+    200 at /.well-known/oauth-protected-resource and at the per-resource
+    /.well-known/oauth-protected-resource/mcp advertised in the
+    WWW-Authenticate challenge.
+- id: rfc7591
+  name: RFC 7591 OAuth 2.0 Dynamic Client Registration
+  conforms: true
+  scope: infillion-agent-connector-mcp only
+  evidence: registration_endpoint https://mcp.infillion.com/register is advertised.
+- id: rfc7636
+  name: RFC 7636 PKCE
+  conforms: true
+  scope: infillion-agent-connector-mcp only
+  evidence: 'code_challenge_methods_supported: ["S256"]'
+- id: mcp
+  name: Model Context Protocol
+  conforms: claimed
+  scope: infillion-agent-connector-mcp only
+  evidence: >-
+    Infillion states Agent Connector is "Built on Model Context Protocol (MCP)"
+    and the gateway exposes /mcp and /sse endpoints with MCP-style OAuth
+    resource metadata. Conformance could not be verified beyond the transport
+    because tools/list is auth-gated (401).
+  source: https://infillion.com/infillion-agent-connector/
+- id: a2a
+  name: A2A Agent Card
+  conforms: false
+  evidence: >-
+    /.well-known/agent-card.json and /.well-known/agent.json return 404 on every
+    host probed, including mcp.infillion.com.
+- id: openapi
+  name: OpenAPI
+  conforms: false
+  evidence: >-
+    No OpenAPI, Swagger or Postman collection published. Probed /openapi.json,
+    /openapi.yaml, /swagger.json and /api-docs on infillion.com, truex.com,
+    api.truex.com, get.truex.com, engage.truex.com and serve.truex.com — all
+    404. The reference is hand-written markdown in a GitHub repository.
+- id: asyncapi
+  name: AsyncAPI
+  conforms: false
+  evidence: >-
+    No AsyncAPI document, despite a real webhook and event surface. See
+    asyncapi/truex-media-webhooks.yml.
+- id: rfc9457-problem-details
+  name: RFC 9457 Problem Details
+  conforms: false
+  evidence: >-
+    Errors are a proprietary {"error", "request_id"} JSON envelope on the ad
+    API and text/plain on the Reporting API. No application/problem+json.
+- id: rfc8594-sunset
+  name: RFC 8594 Sunset header
+  conforms: false
+  evidence: No Sunset or Deprecation headers observed; no deprecation policy published.
+- id: rfc9116-security-txt
+  name: RFC 9116 security.txt
+  conforms: false
+  evidence: 404 at /.well-known/security.txt and /security.txt on every host probed.
+- id: oidc
+  name: OpenID Connect
+  conforms: false
+  evidence: 404 at /.well-known/openid-configuration on every host probed.
+- id: rfc6585-rate-limit
+  name: Rate limit response headers
+  conforms: false
+  evidence: >-
+    No X-RateLimit-*, RateLimit-* or Retry-After headers observed on live
+    responses from get.truex.com or api.truex.com.
+- id: hsts
+  name: HTTP Strict Transport Security
+  conforms: partial
+  evidence: >-
+    infillion.com sets HSTS with max-age 31622400. get.truex.com and
+    api.truex.com — the two API hosts — do not, and both terminate at TLS 1.2.
+  source: security/truex-media-domain-security.yml
+compliance_program:
+  published: false
+  certifications: []
+  trust_center: null
+  evidence:
+  - url: https://infillion.com/trust/
+    status: 404
+  - url: https://infillion.com/security/
+    status: 404
+  - url: https://trust.infillion.com/
+    status: 000
+    note: does not resolve
+  legal_documents:
+  - name: Terms of Use
+    url: https://infillion.com/terms-of-use/
+  - name: Privacy Policy
+    url: https://infillion.com/privacy-policy/
+  - name: Cookie Policy
+    url: https://infillion.com/cookie-policy/
+  - name: Subscription Product Agreement
+    url: https://infillion.com/subscription-product-agreement/
+  - name: Ad Content Guidelines
+    url: https://infillion.com/ad-content-guidelines/

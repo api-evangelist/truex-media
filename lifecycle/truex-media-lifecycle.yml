@@ -1,0 +1,131 @@
+generated: '2026-08-12'
+method: searched
+source: >-
+  https://github.com/socialvibe/truex-ads-docs (js_ad_api.md,
+  web_service_ad_api.md, reporting_api.md), the socialvibe GitHub release and
+  tag history, the @truex npm scope, and the true[X] Android Maven metadata at
+  https://s3.amazonaws.com/android.truex.com/tar/prod/maven — plus live probes
+  of infillion.com and truex.com on 2026-08-12.
+versioning:
+  scheme: uri-path
+  current:
+    web_service_ad_api: v2
+    reporting_api: v1
+  policy_url: null
+  policy_published: false
+  note: >-
+    Major version is pinned in the URL path. There is no published version
+    support window, no sunset schedule and no version-negotiation header. The
+    /v2 ad endpoint supersedes an earlier /v1 referenced in legacy integration
+    material; no migration guide is published for it.
+deprecation:
+  policy_url: null
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  approach: >-
+    true[X] practices additive, indefinitely-backward-compatible deprecation
+    rather than publishing a policy. The JavaScript Ad API reference carries a
+    dated deprecation table and states plainly: "The following config parameters
+    and methods have been deprecated as of 6/2020. We will continue to support
+    the deprecated params and methods so there is no need to update existing
+    implementations." No removal date has ever been announced, and the wire
+    still emits the deprecated parameter name — a live 400 from get.truex.com
+    reads "partner_config_hash is missing" even though the current reference
+    documents the parameter as placement.key.
+  deprecated_since: '2020-06'
+  deprecated_items:
+  - deprecated: network_user_id
+    replaced_by: user.id
+    surface: js-ad-api
+  - deprecated: partner_config_hash
+    replaced_by: placement_hash / placement.key
+    surface: js-ad-api
+    note: Still the name used in the live error message from get.truex.com.
+  - deprecated: loadActivityIntoContainer
+    replaced_by: loadAdIntoContainer
+    surface: js-ad-api
+  - deprecated: openActivityWindow
+    replaced_by: openAdWindow
+    surface: js-ad-api
+  - deprecated: prepareActivity
+    replaced_by: prepareAd
+    surface: js-ad-api
+  - deprecated: trackImpression
+    replaced_by: trackTriggerPointImpression
+    surface: js-ad-api
+  source: https://github.com/socialvibe/truex-ads-docs/blob/master/js_ad_api.md
+status_page:
+  url: null
+  published: false
+  evidence:
+  - url: https://status.infillion.com/
+    status: 000
+    note: does not resolve
+  - url: https://status.truex.com/
+    status: 000
+    note: does not resolve
+  - url: https://infillion.com/status/
+    status: 404
+  - url: https://mcp.infillion.com/health
+    status: 200
+    note: >-
+      A machine health endpoint on the parent-company MCP gateway, returning
+      status, uptime, git commit and deployed_at. It is an operational probe,
+      not a customer-facing status page, so no StatusPage pointer is emitted.
+sla:
+  url: null
+  published: false
+  uptime_target: null
+  note: >-
+    No public SLA. Commercial terms are carried in the Infillion Subscription
+    Product Agreement (https://infillion.com/subscription-product-agreement/)
+    and Terms of Use, neither of which publishes an availability target.
+support_lifecycle:
+  renderer_platforms_active:
+  - iOS (TruexAdRenderer-iOS)
+  - tvOS (TruexAdRenderer)
+  - Android / Fire TV (com.truex:TruexAdRenderer-Android)
+  - Roku (TruexLibrary component library)
+  - CTV / HTML5 web (@truex/ad-renderer)
+  - Amazon Vega OS (@truex/ad-renderer-vega)
+  legacy_surfaces:
+  - name: ActionScript / Flash ad API
+    repo: https://github.com/socialvibe/truex-ads-api-as3
+    last_push: '2015-10-16'
+    state: unmaintained
+  - name: '@truex/js-ad-client (npm)'
+    last_release: '2020-04-30'
+    state: stale — 14 versions, none since 2020
+  - name: SocialVibe engagement_api (Flash rich-media)
+    repo: https://github.com/socialvibe/engagement_api
+    last_push: '2014-06-19'
+    state: unmaintained
+  documentation_drift:
+  - surface: Android renderer
+    docs_version: 2.8.2
+    published_version: 2.10.4
+    published_at: '2025-08-07'
+    note: >-
+      truex-android-integrations/DOCS.md still instructs integrators to depend
+      on 2.8.2 while the provider's own Maven repository has published 2.10.4.
+  - surface: CTV web renderer
+    docs_version: 1.12.5
+    published_version: 1.12.7
+    published_at: '2025-09-22'
+    note: The DOCS.md npm example pins a version two releases behind latest.
+  - surface: iOS renderer
+    docs_version: '3.2'
+    published_version: 4.1.0
+    published_at: '2025-06-10'
+    note: iOS-DOCS.md is a major version behind the shipped package.
+deprecated_operations: []
+deprecated_operations_note: >-
+  No OpenAPI is published, so no operation-level deprecation can be derived.
+gaps:
+- No published deprecation or versioning policy document.
+- No Sunset or Deprecation response headers (RFC 8594).
+- No customer-facing status page or incident history.
+- No public SLA or uptime target.
+- Integration docs lag the published SDK artifacts on three of five platforms.

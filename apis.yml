@@ -1,15 +1,17 @@
 aid: truex-media
 accessModel:
   pricing: unknown
-  onboarding: unknown
+  onboarding: partner
   trial: false
   try_now: false
   public: false
-  label: Unknown
-  confidence: low
-  source: []
-  generated: '2026-07-22'
-  method: derived
+  label: Partner
+  confidence: medium
+  source:
+  - https://github.com/socialvibe/truex-ads-docs/blob/master/web_service_ad_api.md
+  - https://infillion.com/contact/
+  generated: '2026-08-12'
+  method: searched
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/truex-media.png
 name: Truex Media
 description: >-
@@ -21,11 +23,16 @@ description: >-
   and web. The company originated as SocialVibe (a Redpoint Ventures portfolio
   company), was acquired by 21st Century Fox, and is now a video advertising
   product within Infillion alongside MediaMath, InStadium, Gimbal, and Catalina.
-  TrueX's integration surface is the TruexAdRenderer (TAR) client SDK — published
-  first-party from the "socialvibe" GitHub organization for iOS, tvOS, Android,
-  Roku, and CTV/HTML5 web via Swift Package Manager and CocoaPods — rather than a
-  public REST API. Publishers embed the renderer, typically alongside Google IMA
-  (client- or server-side ad insertion), to serve and measure interactive ads.
+  true[X] publishes two real HTTP APIs from its own truex.com hosts — a Web
+  Service Ad API at get.truex.com/v2 that returns a JSON ad object for
+  server-side ad requests, and a Reporting API at api.truex.com/v1 that returns
+  publisher performance by placement, day and campaign — alongside a signed
+  server-to-server engagement callback. Its primary integration surface remains
+  the TruexAdRenderer (TAR) client SDK, published first-party from the
+  "socialvibe" GitHub organization and the @truex npm scope for iOS, tvOS,
+  Android/Fire TV, Roku, Amazon Vega OS, and CTV/HTML5 web. Parent company
+  Infillion also operates Infillion Agent Connector, an MCP-based agent-native
+  media execution layer at mcp.infillion.com.
 url: https://raw.githubusercontent.com/api-evangelist/truex-media/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
@@ -35,7 +42,7 @@ x-tier: stub
 x-tier-reason: portfolio-lead
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-21'
+modified: '2026-08-12'
 tags:
 - Company
 - Advertising
@@ -45,26 +52,133 @@ tags:
 - Interactive Advertising
 - SDK
 - Mobile
-apis: []
+- Ad Serving
+- Reporting
+- Attention Measurement
+- OTT
+apis:
+- aid: truex-media-web-service-ad-api
+  name: true[X] Web Service Ad API
+  description: >-
+    Server-side ad request API. A GET against the versioned endpoint with a
+    placement key, user id, IP and user agent returns a JSON `ad` object
+    (creative id, campaign id, window URL and dimensions, currency amount,
+    revenue amount, session id) or an error object when no bid is available.
+    Intended for server-side implementations; the returned ad object can be
+    handed to the true[X] JavaScript client via `prepareAd` for client-side
+    event handling. Pairs with a signed server-to-server engagement callback.
+  humanURL: https://github.com/socialvibe/truex-ads-docs/blob/master/web_service_ad_api.md
+  baseURL: https://get.truex.com/v2
+  tags:
+  - Ad Serving
+  - Advertising
+  - Video Advertising
+  properties:
+  - type: Documentation
+    url: https://github.com/socialvibe/truex-ads-docs/blob/master/web_service_ad_api.md
+  - type: APIReference
+    url: https://github.com/socialvibe/truex-ads-docs/blob/master/web_service_ad_api.md
+- aid: truex-media-reporting-api
+  name: true[X] Reporting API
+  description: >-
+    Publisher performance reporting. A GET against
+    /v1/publisher/performance.json (or .csv) with an api_key and a date range
+    returns revenue and key performance indicators broken out by placement key,
+    day and campaign — including initial and completed engagements, advertiser
+    cost, average CPE, net revenue, frequency caps and geo targeting.
+  humanURL: https://github.com/socialvibe/truex-ads-docs/blob/master/reporting_api.md
+  baseURL: https://api.truex.com/v1
+  tags:
+  - Reporting
+  - Analytics
+  - Advertising
+  properties:
+  - type: Documentation
+    url: https://github.com/socialvibe/truex-ads-docs/blob/master/reporting_api.md
+  - type: APIReference
+    url: https://github.com/socialvibe/truex-ads-docs/blob/master/reporting_api.md
+- aid: truex-media-js-ad-api
+  name: true[X] JavaScript Ad API
+  description: >-
+    Client-side JavaScript integration for publishers embedding true[X]
+    engagement ads on the web. Loads truex.client from static.truex.com, exposes
+    requestAd, loadAdIntoContainer, openAdWindow, trackTriggerPointImpression,
+    trackOptOut and prepareAd, and emits the ad lifecycle events onStart,
+    onCredit, onClose, onFinish, onMessage, onError and onClickthrough.
+  humanURL: https://github.com/socialvibe/truex-ads-docs/blob/master/js_ad_api.md
+  baseURL: https://static.truex.com/js/client.js
+  tags:
+  - Advertising
+  - Video Advertising
+  - JavaScript
+  properties:
+  - type: Documentation
+    url: https://github.com/socialvibe/truex-ads-docs/blob/master/js_ad_api.md
+  - type: Sandbox
+    url: sandbox/truex-media-sandbox.yml
 common:
-- type: DomainSecurity
-  url: security/truex-media-domain-security.yml
 - type: Website
   url: https://infillion.com
+- type: DeveloperPortal
+  url: https://github.com/socialvibe/truex-ads-docs
+- type: Documentation
+  url: https://github.com/socialvibe/truex-ads-docs
+- type: APIReference
+  url: https://github.com/socialvibe/truex-ads-docs/blob/master/web_service_ad_api.md
+- type: GettingStarted
+  url: https://github.com/socialvibe/truex-mobile-integrations/wiki
 - type: GitHubOrganization
   url: https://github.com/socialvibe
-- type: Documentation
-  url: https://github.com/socialvibe/truex-mobile-integrations/wiki
 - type: Blog
   url: https://infillion.com/blog/
 - type: Support
   url: https://infillion.com/contact/
+- type: SignUp
+  url: https://infillion.com/contact/
+- type: TermsOfService
+  url: https://infillion.com/terms-of-use/
 - type: PrivacyPolicy
   url: https://infillion.com/privacy-policy/
+- type: CookiePolicy
+  url: https://infillion.com/cookie-policy/
 - type: Packages
   url: packages/truex-media-packages.yml
 - type: SDKs
   url: packages/truex-media-packages.yml
+- type: Components
+  url: components/truex-media-components.yml
+- type: MCPServer
+  url: mcp/truex-media-mcp.yml
+- type: WellKnown
+  url: well-known/truex-media-well-known.yml
+- type: Authentication
+  url: authentication/truex-media-authentication.yml
+- type: Conventions
+  url: conventions/truex-media-conventions.yml
+- type: Idempotency
+  url: conventions/truex-media-conventions.yml
+- type: ErrorCatalog
+  url: errors/truex-media-error-codes.yml
+- type: Webhooks
+  url: asyncapi/truex-media-webhooks.yml
+- type: Lifecycle
+  url: lifecycle/truex-media-lifecycle.yml
+- type: Deprecation
+  url: lifecycle/truex-media-lifecycle.yml
+- type: ChangeLog
+  url: changelog/truex-media-changelog.yml
+- type: Conformance
+  url: conformance/truex-media-conformance.yml
+- type: DataModel
+  url: data-model/truex-media-data-model.yml
+- type: Sandbox
+  url: sandbox/truex-media-sandbox.yml
+- type: RateLimits
+  url: rate-limits/truex-media-rate-limits.yml
+- type: Plans
+  url: plans/truex-media-plans-pricing.yml
+- type: DomainSecurity
+  url: security/truex-media-domain-security.yml
 - type: LLMsTxt
   url: llms/truex-media-llms.txt
 maintainers:
@@ -73,7 +187,7 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 x-enrichment:
-  date: '2026-07-21'
+  date: '2026-08-12'
   status: enriched
-  artifacts_added: 3
+  artifacts_added: 16
   pass: local-v1

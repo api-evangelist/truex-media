@@ -1,0 +1,121 @@
+generated: '2026-08-12'
+method: probed
+source: >-
+  Live GET probes of /.well-known/* across every host named in apis.yml — the
+  Infillion website, the true[X] Web Service Ad API host, the true[X] Reporting
+  API host, and the Infillion Agent Connector MCP host.
+note: >-
+  Two real RFC-defined discovery documents were served, both by the Infillion
+  Agent Connector MCP gateway at mcp.infillion.com — an RFC 8414 OAuth 2.0
+  Authorization Server Metadata document and an RFC 9728 OAuth 2.0 Protected
+  Resource Metadata document. They are saved verbatim below. Every other probed
+  path on every other host returned 404. The infillion.com / truex.com 404s are
+  WordPress catch-all HTML pages of ~250KB, not documents; they are recorded as
+  misses. No security.txt, no OpenID Connect discovery, no api-catalog and no
+  ai-plugin.json is served anywhere on these hosts.
+hosts_probed:
+- https://infillion.com
+- https://truex.com
+- https://get.truex.com
+- https://api.truex.com
+- https://engage.truex.com
+- https://serve.truex.com
+- https://mcp.infillion.com
+documents:
+- host: https://mcp.infillion.com
+  path: /.well-known/oauth-authorization-server
+  status: 200
+  content_type: application/json
+  spec: RFC 8414
+  file: truex-media-oauth-authorization-server.json
+- host: https://mcp.infillion.com
+  path: /.well-known/oauth-protected-resource
+  status: 200
+  content_type: application/json
+  spec: RFC 9728
+  file: truex-media-oauth-protected-resource.json
+- host: https://mcp.infillion.com
+  path: /.well-known/oauth-protected-resource/mcp
+  status: 200
+  content_type: application/json
+  spec: RFC 9728
+  note: >-
+    Per-resource variant advertised in the WWW-Authenticate challenge on the MCP
+    endpoint. Body is byte-identical to /.well-known/oauth-protected-resource,
+    so it is not saved a second time.
+- host: https://mcp.infillion.com
+  path: /.well-known/openid-configuration
+  status: 404
+- host: https://mcp.infillion.com
+  path: /.well-known/agent-card.json
+  status: 404
+- host: https://mcp.infillion.com
+  path: /.well-known/agent.json
+  status: 404
+- host: https://infillion.com
+  path: /.well-known/security.txt
+  status: 404
+- host: https://infillion.com
+  path: /security.txt
+  status: 404
+- host: https://infillion.com
+  path: /.well-known/openid-configuration
+  status: 404
+- host: https://infillion.com
+  path: /.well-known/oauth-authorization-server
+  status: 404
+- host: https://infillion.com
+  path: /.well-known/api-catalog
+  status: 404
+- host: https://infillion.com
+  path: /.well-known/ai-plugin.json
+  status: 404
+- host: https://infillion.com
+  path: /.well-known/agent-card.json
+  status: 404
+  note: 404 body is a ~250KB WordPress HTML page, not a document.
+- host: https://infillion.com
+  path: /.well-known/agent.json
+  status: 404
+- host: https://truex.com
+  path: /.well-known/security.txt
+  status: 404
+  note: truex.com 301s to infillion.com; probes follow the redirect.
+- host: https://truex.com
+  path: /.well-known/agent-card.json
+  status: 404
+- host: https://truex.com
+  path: /.well-known/agent.json
+  status: 404
+- host: https://get.truex.com
+  path: /.well-known/security.txt
+  status: 404
+- host: https://get.truex.com
+  path: /.well-known/agent-card.json
+  status: 404
+- host: https://get.truex.com
+  path: /.well-known/agent.json
+  status: 404
+- host: https://api.truex.com
+  path: /.well-known/security.txt
+  status: 404
+- host: https://api.truex.com
+  path: /.well-known/agent-card.json
+  status: 404
+- host: https://api.truex.com
+  path: /.well-known/agent.json
+  status: 404
+- host: https://engage.truex.com
+  path: /.well-known/security.txt
+  status: 404
+- host: https://engage.truex.com
+  path: /.well-known/agent-card.json
+  status: 404
+- host: https://serve.truex.com
+  path: /.well-known/agent-card.json
+  status: 404
+x-evidence:
+  fetched: '2026-08-12'
+  hit_count: 3
+  miss_count: 22
+  agent_card_found: false

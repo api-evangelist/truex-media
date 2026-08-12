@@ -42,6 +42,8 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Truex Media is a company surfaced as a portfolio company of redpoint-ventures and added to the API Evangelist network as a stub for enrichment. This profile is a lead awaiting the enrichment pipeline.
+TrueX (true[X]) is an interactive, opt-in video advertising company, now a product within Infillion. It publishes two real HTTP APIs from its own truex.com hosts — a Web Service Ad API at `get.truex.com/v2` and a Reporting API at `api.truex.com/v1` — plus a signed server-to-server engagement callback and the TruexAdRenderer (TAR) client SDK for CTV, OTT, mobile and web. The reference is hand-written markdown in the public [socialvibe/truex-ads-docs](https://github.com/socialvibe/truex-ads-docs) repository; no OpenAPI, AsyncAPI, GraphQL SDL or Postman collection is published anywhere.
+
+Parent company Infillion separately operates Infillion Agent Connector, an MCP-based agent execution layer at `mcp.infillion.com` whose tool list is OAuth-gated.
 
 Backed by: redpoint-ventures

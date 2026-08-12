@@ -1,32 +1,117 @@
 # TrueX (true[X]) — Truex Media
 
-> TrueX is an interactive, opt-in video advertising company, now part of Infillion.
-> Its integration surface is the TruexAdRenderer (TAR) client SDK for CTV, OTT,
-> mobile, and web — published first-party from the "socialvibe" GitHub organization
-> for iOS, tvOS, Android, Roku, and CTV/HTML5 web via Swift Package Manager and
-> CocoaPods. TrueX is an SDK provider, not a public REST API.
+> true[X] is an interactive, opt-in video advertising company, now a product within
+> Infillion. Viewers are offered a Choice Card at an ad break and can opt in to one
+> longer interactive branded experience in exchange for an ad-free content break —
+> the "True Attention" model, credited after roughly 30 seconds plus one interaction.
+> true[X] publishes two real HTTP APIs from its own truex.com hosts, a signed
+> server-to-server engagement callback, and the TruexAdRenderer (TAR) client SDK for
+> CTV, OTT, mobile and web. It publishes NO OpenAPI, AsyncAPI, GraphQL SDL or Postman
+> collection — the reference is hand-written markdown in a public GitHub repository.
+> Parent company Infillion separately operates an MCP-based agent surface.
 
-## Company
-- Website: https://infillion.com
-- TrueX product: https://infillion.com/products/infillion-truex/
-- Blog: https://infillion.com/blog/
-- Resources: https://infillion.com/resources/
-- Contact / Support: https://infillion.com/contact/
-- Privacy Policy: https://infillion.com/privacy-policy/
-- Backed by (historical): Redpoint Ventures (as SocialVibe)
+## APIs
 
-## Source Code & SDKs
-- GitHub organization: https://github.com/socialvibe
-- TruexAdRenderer iOS (Swift Package): https://github.com/socialvibe/TruexAdRenderer-iOS-Swift-Package
-- TruexAdRenderer tvOS (Swift Package): https://github.com/socialvibe/TruexAdRenderer-tvOS-Swift-Package
-- CocoaPods spec repo: https://github.com/socialvibe/cocoapod-specs
-- Android integrations: https://github.com/socialvibe/truex-android-integrations
-- Roku reference app: https://github.com/socialvibe/truex-roku-reference-app
-- CTV web (HTML5) reference app: https://github.com/socialvibe/truex-ctv-web-reference-app
+- [true[X] Web Service Ad API](https://github.com/socialvibe/truex-ads-docs/blob/master/web_service_ad_api.md):
+  `GET https://get.truex.com/v2` — server-side ad request. Required: `placement.key`,
+  `user.id`, `ip`, `user_agent`. Optional targeting: `age`, `yob`, `gender`,
+  `dimension_1`–`dimension_5`, `coppa`. Returns a JSON `ad` object (`id`,
+  `campaign_id`, `name`, `window_url`, `window_width`, `window_height`,
+  `currency_amount`, `revenue_amount`, `session_id`), or `{"error": "No bid found"}`
+  with HTTP 200 on a no-fill. QA host: `https://qa-get.truex.com/v2`.
+- [true[X] Reporting API](https://github.com/socialvibe/truex-ads-docs/blob/master/reporting_api.md):
+  `GET https://api.truex.com/v1/publisher/performance.json` (and `.csv`) — publisher
+  performance by placement key, day and campaign. Parameters: `api_key`,
+  `start_date`, `end_date`. Returns engagements, advertiser cost, average CPE, net
+  revenue, frequency caps and geo targeting. Returns `401 Unauthorized: Invalid API
+  key` without a valid key.
+- [true[X] JavaScript Ad API](https://github.com/socialvibe/truex-ads-docs/blob/master/js_ad_api.md):
+  client-side integration via `https://static.truex.com/js/client.js`. Methods
+  `requestAd`, `loadAdIntoContainer`, `openAdWindow`, `trackTriggerPointImpression`,
+  `trackOptOut`, `prepareAd`. Events `onStart`, `onCredit`, `onClose`, `onFinish`,
+  `onMessage`, `onError`, `onClickthrough`.
+- [Engagement callback (webhook)](https://github.com/socialvibe/truex-ads-docs/blob/master/web_service_ad_api.md):
+  true[X] → partner HTTP GET on engagement completion. HMAC-SHA1 signed (`sig`,
+  `application_secret`), IP-allowlisted, deduplicated on `engagement_id`, retried on
+  partner response code `0`.
+
+## Agent surface
+
+- [Infillion Agent Connector](https://infillion.com/infillion-agent-connector/): the
+  PARENT COMPANY's MCP-based agent-native media execution layer at
+  `https://mcp.infillion.com/mcp`. OAuth 2.1 gated — anonymous `tools/list` returns
+  HTTP 401. Discovery metadata is public: RFC 8414 at
+  `/.well-known/oauth-authorization-server`, RFC 9728 at
+  `/.well-known/oauth-protected-resource`, dynamic client registration at `/register`,
+  PKCE S256. The tool list is NOT public and is not recorded anywhere in this profile.
+- No A2A Agent Card. `/.well-known/agent-card.json` and `/.well-known/agent.json`
+  return 404 on every truex.com and infillion.com host.
 
 ## Documentation
-- Mobile integrations (wiki / getting started): https://github.com/socialvibe/truex-mobile-integrations/wiki
-- Ad production docs: https://github.com/socialvibe/truex-ads-docs
 
-## Repo Artifacts
+- Ad production + API docs: https://github.com/socialvibe/truex-ads-docs
+- Mobile integration wiki: https://github.com/socialvibe/truex-mobile-integrations/wiki
+- CTV/web renderer: https://github.com/socialvibe/truex-ad-renderer-web-integration/blob/master/DOCS.md
+- Android / Fire TV renderer: https://github.com/socialvibe/truex-android-integrations/blob/master/DOCS.md
+- Roku renderer: https://github.com/socialvibe/truex-roku-integrations/blob/master/DOCS.md
+- iOS renderer: https://github.com/socialvibe/truex-mobile-integrations/blob/master/iOS-DOCS.md
+- Engagement query parameters (testing): https://github.com/socialvibe/truex-ads-docs/blob/master/query_param_reference.md
+- Ad Builder Layout API: https://github.com/socialvibe/truex-ads-docs/blob/master/ad_builder_layout_api.md
+- Interaction tracking: https://github.com/socialvibe/truex-ads-docs/blob/master/engagement_interaction_tracking.md
+- Choice card events: https://github.com/socialvibe/truex-ads-docs/blob/master/choice_card_event_tracking.md
+- VPAID AdInteraction events: https://github.com/socialvibe/truex-ads-docs/blob/master/choice_card_vpaid_events.md
+
+## SDKs
+
+- `@truex/ad-renderer` (npm, 1.12.7, 2025-09-22) — CTV / desktop / mobile web renderer
+- `@truex/ad-renderer-vega` (npm, 0.8.3, 2026-02-09) — Amazon Vega OS renderer
+- `@truex/js-ad-client` (npm, 0.0.13, 2020-04-30) — packaged JS client, unmaintained
+- `TruexAdRenderer` tvOS (SPM + private CocoaPods spec repo, 3.15.3, 2026-06-15)
+- `TruexAdRenderer-iOS` (SPM + private CocoaPods spec repo, 4.1.0, 2025-06-10)
+- `com.truex:TruexAdRenderer-Android` (true[X]-hosted Maven, 2.10.4, 2025-08-07)
+- Roku `TruexLibrary` component library (1.2.0, no registry — direct hand-off)
+- GitHub organization: https://github.com/socialvibe
+
+## Company
+
+- Website: https://infillion.com
+- true[X] product: https://infillion.com/products/infillion-truex/
+- Blog: https://infillion.com/blog/
+- Contact / Support / Sales: https://infillion.com/contact/
+- Terms of Use: https://infillion.com/terms-of-use/
+- Privacy Policy: https://infillion.com/privacy-policy/
+- Cookie Policy: https://infillion.com/cookie-policy/
+- Subscription Product Agreement: https://infillion.com/subscription-product-agreement/
+- Backed by (historical, as SocialVibe): Redpoint Ventures
+
+## Repo artifacts
+
+- APIs.json: apis.yml
 - Packages / SDKs: packages/truex-media-packages.yml
+- Embedded components: components/truex-media-components.yml
+- MCP server: mcp/truex-media-mcp.yml
+- Well-known probe: well-known/truex-media-well-known.yml
+- Authentication: authentication/truex-media-authentication.yml
+- Conventions: conventions/truex-media-conventions.yml
+- Error catalog: errors/truex-media-error-codes.yml
+- Webhooks / events: asyncapi/truex-media-webhooks.yml
+- Data model: data-model/truex-media-data-model.yml
+- Lifecycle: lifecycle/truex-media-lifecycle.yml
+- Changelog: changelog/truex-media-changelog.yml
+- Conformance: conformance/truex-media-conformance.yml
+- Sandbox: sandbox/truex-media-sandbox.yml
+- Rate limits: rate-limits/truex-media-rate-limits.yml
+- Plans / pricing: plans/truex-media-plans-pricing.yml
+- Domain security: security/truex-media-domain-security.yml
+
+## Known gaps
+
+- No OpenAPI, AsyncAPI, GraphQL SDL, JSON Schema or Postman collection anywhere.
+- No developer portal, no signup, no self-service credentials — every key is issued
+  by a human at true[X] during an integration engagement.
+- No public pricing; enterprise media buy only.
+- No status page, no SLA, no deprecation policy, no security.txt, no bug bounty and
+  no trust center or published certification.
+- No rate limits published and no rate-limit headers on the wire.
+- Integration docs lag the shipped SDKs on iOS (docs 3.2 vs 4.1.0), Android (2.8.2 vs
+  2.10.4) and CTV web (1.12.5 vs 1.12.7).

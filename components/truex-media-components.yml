@@ -1,0 +1,185 @@
+generated: '2026-08-12'
+method: searched
+source: >-
+  https://github.com/socialvibe/truex-ad-renderer-web-integration/blob/master/DOCS.md,
+  truex-android-integrations/DOCS.md, truex-roku-integrations/DOCS.md,
+  truex-mobile-integrations/iOS-DOCS.md, and
+  https://github.com/socialvibe/truex-ads-docs (js_ad_api.md,
+  choice_card_config_params.md, overlay_card_config_params.md,
+  roku_tar_choice_card_config_params.md, ad_builder_layout_api.md).
+note: >-
+  true[X]'s product IS an embeddable client-side component. TruexAdRenderer
+  (TAR) is instantiated by a host video application, takes over the screen to
+  render the choice card and the interactive ad unit, and hands control back
+  through events. This artifact catalogs that component surface; the
+  distributable artifacts themselves are in packages/truex-media-packages.yml.
+families:
+- family: TruexAdRenderer (TAR)
+  kind: embedded ad renderer
+  description: >-
+    A per-platform renderer class the host player instantiates when its ad
+    server returns a true[X] placeholder. TAR takes responsibility for
+    requesting the ad, drawing the native choice-card and engagement UI, and
+    emitting lifecycle events so the host can pause, skip the pod, and resume
+    playback.
+  lifecycle_methods:
+  - init
+  - start
+  - stop
+  - pause
+  - resume
+  - subscribe
+  - unsubscribe
+  events_reference: asyncapi/truex-media-webhooks.yml
+  implementations:
+  - platform: ctv-web
+    class: TruexAdRendererCTV
+    loader: '@truex/ad-renderer'
+    entrypoint: 'new TruexAdRendererCTV(vastConfigUrl)'
+    docs: https://github.com/socialvibe/truex-ad-renderer-web-integration/blob/master/DOCS.md
+  - platform: desktop-web
+    class: TruexAdRendererDesktop
+    loader: '@truex/ad-renderer'
+  - platform: mobile-web
+    class: TruexAdRendererMobile
+    loader: '@truex/ad-renderer'
+  - platform: vega-os
+    loader: '@truex/ad-renderer-vega'
+    docs: https://github.com/socialvibe/truex-vega-reference-app
+  - platform: android / fire-tv
+    class: TruexAdRenderer (Java)
+    loader: com.truex:TruexAdRenderer-Android
+    companion_classes:
+    - TruexAdEvent
+    - IEventEmitter
+    - TruexAdOptions
+    docs: https://github.com/socialvibe/truex-android-integrations/blob/master/DOCS.md
+  - platform: roku
+    class: TruexAdRenderer (SceneGraph node)
+    loader: TruexLibrary component library
+    interface: input events (init, start) and output events observed on node fields
+    docs: https://github.com/socialvibe/truex-roku-integrations/blob/master/DOCS.md
+  - platform: ios
+    class: TruexAdRenderer (Objective-C)
+    loader: TruexAdRenderer-iOS
+    delegate: TruexAdRendererDelegate
+    constants: TruexConstants
+    entrypoint: initWithUrl
+    docs: https://github.com/socialvibe/truex-mobile-integrations/blob/master/iOS-DOCS.md
+  - platform: tvos
+    class: TruexAdRenderer (Objective-C)
+    loader: TruexAdRenderer
+  supported_ctv_platforms:
+  - Comcast X1 / Flex
+  - Fire TV / Android TV
+  - Vizio Smartcast
+  - LG WebOS
+  - Samsung Tizen
+  - PS4
+  - PS5
+  - Xbox One
+  - Roku
+- family: Choice Card
+  kind: hosted trigger-point UI
+  aka: FEP trigger point
+  description: >-
+    The opt-in surface true[X] renders at the start of a sponsored ad break,
+    offering the viewer a choice between one interactive ad and the normal
+    commercial pod. It is configuration-driven, not code-driven — publishers
+    style it through a choice_card_config rather than building it.
+  variants:
+  - name: Choice Card
+    config_reference: https://github.com/socialvibe/truex-ads-docs/blob/master/choice_card_config_params.md
+  - name: Roku Choice Card
+    config_reference: https://github.com/socialvibe/truex-ads-docs/blob/master/roku_tar_choice_card_config_params.md
+  - name: Overlay Card
+    config_reference: https://github.com/socialvibe/truex-ads-docs/blob/master/overlay_card_config_params.md
+  - name: Skip Card
+    aka: Thank You card
+    description: Shown when the viewer is already in an ad-free state.
+  - name: Continue Card
+    config_reference: https://github.com/socialvibe/truex-ads-docs/blob/master/connected_device_continue_card_spec.md
+  configurable_via:
+    mechanism: VAST wrapper query parameters on VASTAdTagURI
+    reference: https://github.com/socialvibe/truex-ads-docs/blob/master/connected_device_vast_wrapper_query_args.md
+    parameters_include:
+    - bg / bgv (background image or video)
+    - ib / ix / iy (interact button sprite and position)
+    - wb / wx / wy (watch-ads button sprite and position)
+    - cx / cy / cw / ch / cfs (countdown timer geometry)
+    - sk (skip card image or mp4)
+    - aa (auto-advance seconds)
+    - vo (voice-over audio)
+    - product (sponsored_stream | sponsored_ad_break | continue | stream_pass)
+  events_reference: asyncapi/truex-media-webhooks.yml
+- family: truex.client (JavaScript ad client)
+  kind: client-side JS library
+  loader: https://static.truex.com/js/client.js
+  test_loader: https://static.truex.com/js/client.test.js
+  npm: '@truex/js-ad-client'
+  description: >-
+    The web integration path that predates TAR. Publishers construct
+    truex.client with a user_id and placement_hash, request an ad, and mount it
+    with loadAdIntoContainer (preferred) or openAdWindow (pop-up).
+  methods:
+  - requestAd(callback)
+  - loadAdIntoContainer(ad, container, options)
+  - openAdWindow(ad)
+  - trackTriggerPointImpression(ad)
+  - trackOptOut(ad)
+  - prepareAd(ad)
+  mount_target: a publisher-supplied DOM element or element id
+  docs: https://github.com/socialvibe/truex-ads-docs/blob/master/js_ad_api.md
+- family: Ad Builder Layout API
+  kind: in-creative authoring API
+  description: >-
+    A JavaScript API exposed inside engagement creatives built with the true[X]
+    Ad Builder. The _layout variable addresses UI elements laid out in the
+    builder and drives step transitions, tweening and event binding. Audience is
+    the creative developer, not the integrating publisher.
+  element_types:
+  - Image
+  - Button
+  - Text
+  - Input
+  - IFrame
+  - Video
+  - YouTube
+  api_surface:
+  - _layout.<element_name> (jQuery reference)
+  - _layout.startVideo / stopVideo / restartVideo / updateVideoURL
+  - _layout.nextStep / gotoStep
+  - _layout.tweenTo / tweenFrom
+  - _layout.on / off
+  - _layout.require(url, type)
+  ui_events:
+  - click
+  - mouseDown
+  - mouseUp
+  - mouseMove
+  - rollOut
+  - rollOver
+  - mouseWheel
+  - videoStarted
+  - videoFirstQuartile
+  - videoMidpoint
+  - videoThirdQuartile
+  - videoCompleted
+  docs: https://github.com/socialvibe/truex-ads-docs/blob/master/ad_builder_layout_api.md
+integration_partners:
+  note: >-
+    TAR is designed to sit alongside an existing ad stack rather than replace
+    it. The provider ships reference apps for each pairing.
+  ad_servers:
+  - Google Ad Manager / IMA (CSAI and SSAI)
+  - FreeWheel
+  - Innovid
+  - Verizon / Uplynk
+  standards:
+  - VAST
+  - VPAID
+  - SIMID
+gaps:
+- No component versioning surface a publisher can query at runtime.
+- Choice card configuration is delivered as opaque single-letter VAST query args.
+- No design-token, theming or accessibility documentation for any card surface.

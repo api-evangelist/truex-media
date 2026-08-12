@@ -1,0 +1,92 @@
+generated: '2026-08-12'
+method: probed
+source: >-
+  Live unauthenticated responses from https://get.truex.com/v2 and
+  https://api.truex.com/v1/publisher/performance.json observed 2026-08-12, plus
+  a full read of https://github.com/socialvibe/truex-ads-docs.
+limit_count: 0
+documented: false
+headers_present: false
+note: >-
+  HONEST ZERO. true[X] publishes no rate limits, quotas or throttling policy for
+  either HTTP API, and no rate-limit signalling was observed on the wire. Every
+  response header on both hosts was inspected: get.truex.com returns only
+  caching, CORS and Set-Cookie headers plus a Server banner, and api.truex.com
+  returns the standard Rails security-header set plus X-Request-Id and
+  X-Runtime. There is no X-RateLimit-Limit, X-RateLimit-Remaining,
+  X-RateLimit-Reset, RateLimit-* (RFC 9239 style) or Retry-After on either
+  surface, and no 429 was reachable anonymously. An integrating agent therefore
+  has no runtime signal at all — it cannot know its budget, its remaining
+  allowance, or when to retry.
+limits: []
+exhaustion:
+  status_code: null
+  observed: false
+  note: >-
+    Not observed and not documented. The only error statuses reachable
+    anonymously are 400 (missing placement key) and 401 (invalid reporting API
+    key).
+observed_response_headers:
+  https://get.truex.com/v2:
+  - date
+  - content-type
+  - content-length
+  - server
+  - cache-control
+  - access-control-allow-origin
+  - access-control-allow-credentials
+  - access-control-allow-headers
+  - set-cookie
+  https://api.truex.com/v1/publisher/performance.json:
+  - date
+  - content-type
+  - server
+  - x-frame-options
+  - x-xss-protection
+  - x-content-type-options
+  - x-download-options
+  - x-permitted-cross-domain-policies
+  - referrer-policy
+  - cache-control
+  - set-cookie
+  - x-request-id
+  - x-runtime
+  - vary
+implicit_controls:
+  note: >-
+    The provider does not throttle by request count, but it does publish two
+    controls that bound consumption in practice.
+  controls:
+  - name: frequency caps
+    detail: >-
+      daily_frequency_cap and lifetime_frequency_cap are campaign-level fields
+      returned in the Reporting API, capping how often a given user can be
+      served a campaign. This is an ad-delivery control, not an API rate limit.
+    source: https://github.com/socialvibe/truex-ads-docs/blob/master/reporting_api.md
+  - name: callback IP allowlist
+    detail: >-
+      true[X] blocks all external calls to the engagement callback except from
+      eight published egress addresses. An access control, not a rate limit.
+    source: https://github.com/socialvibe/truex-ads-docs/blob/master/web_service_ad_api.md
+  - name: reporting date range
+    detail: >-
+      start_date and end_date are the only lever bounding Reporting API response
+      size; no maximum range is published.
+x-evidence:
+- url: https://get.truex.com/v2
+  http_status: 400
+  ratelimit_headers: none
+  fetched: '2026-08-12'
+- url: https://get.truex.com/v2?placement.key=<test>&user.id=<test>
+  http_status: 200
+  ratelimit_headers: none
+  fetched: '2026-08-12'
+- url: https://api.truex.com/v1/publisher/performance.json
+  http_status: 401
+  ratelimit_headers: none
+  fetched: '2026-08-12'
+gaps:
+- No published quota, burst or concurrency limit on either API.
+- No rate-limit response headers, so no runtime budget signal for an agent.
+- No documented retry guidance or backoff expectation.
+- No 429 semantics published.

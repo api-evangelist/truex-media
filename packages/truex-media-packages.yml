@@ -1,54 +1,227 @@
-generated: '2026-07-21'
+generated: '2026-08-12'
 method: searched
-source: https://github.com/socialvibe
+source: >-
+  registry.npmjs.org, the true[X] private CocoaPods spec repo at
+  https://github.com/socialvibe/cocoapod-specs, the true[X] Android Maven
+  repository at https://s3.amazonaws.com/android.truex.com/tar/prod/maven, and
+  the socialvibe GitHub release/tag API.
 notes: >-
-  TrueX (true[X], org "socialvibe" on GitHub) distributes its integration
-  surface as the TruexAdRenderer (TAR) client SDK for connected-TV, mobile,
-  and web ad rendering — not as a REST API. Packages below are first-party,
-  published from the socialvibe org (org display name "true[X]",
-  org blog http://www.truex.com). Exact registry version strings are only
-  recorded where verified; distribution repos are linked verbatim.
+  true[X] (GitHub org "socialvibe", org display name "true[X]") distributes its
+  integration surface as the TruexAdRenderer (TAR) client SDK for connected-TV,
+  mobile and web ad rendering. Every package below is first-party. Versions and
+  publish dates are read from each registry's own metadata endpoint on
+  2026-08-12, not from the integration docs — the docs are behind the artifacts
+  on three platforms (see lifecycle/truex-media-lifecycle.yml). Two distribution
+  channels are private-but-public-readable rather than on a central registry:
+  the CocoaPods specs live in a true[X]-owned spec repo (the pods are NOT on
+  CocoaPods trunk — trunk returns "No pod found"), and the Android artifact
+  lives in a true[X]-owned S3-hosted Maven repository (it is NOT on Maven
+  Central — a search for "truex" returns 0 results).
 packages:
-  - language: swift
-    platform: ios
-    registry: swift-package-manager
-    name: TruexAdRenderer (iOS)
-    url: https://github.com/socialvibe/TruexAdRenderer-iOS-Swift-Package
-    install: Add package https://github.com/socialvibe/TruexAdRenderer-iOS-Swift-Package in Xcode (SPM)
-    official: true
-  - language: swift
-    platform: tvos
-    registry: swift-package-manager
-    name: TruexAdRenderer (tvOS)
-    url: https://github.com/socialvibe/TruexAdRenderer-tvOS-Swift-Package
-    install: Add package https://github.com/socialvibe/TruexAdRenderer-tvOS-Swift-Package in Xcode (SPM)
-    official: true
-  - language: objective-c
-    platform: ios
-    registry: cocoapods
-    name: TruexAdRenderer (CocoaPods)
-    url: https://github.com/socialvibe/cocoapod-specs
-    install: Use the true[X] private CocoaPods spec repo (socialvibe/cocoapod-specs)
-    version: 3.0.3
-    official: true
-  - language: java
-    platform: android
-    registry: github
-    name: TruexAdRenderer (Android)
-    url: https://github.com/socialvibe/truex-android-integrations
-    install: See socialvibe/truex-android-integrations Getting Started guide
-    official: true
-  - language: brightscript
-    platform: roku
-    registry: github
-    name: TruexAdRenderer (Roku)
-    url: https://github.com/socialvibe/truex-roku-reference-app
-    install: Integrate per the Roku reference channel (socialvibe/truex-roku-reference-app)
-    official: true
-  - language: javascript
-    platform: ctv-web
-    registry: github
-    name: TruexAdRenderer (CTV Web / HTML5)
-    url: https://github.com/socialvibe/truex-ctv-web-reference-app
-    install: See socialvibe/truex-ctv-web-reference-app (HTML5/JS integration)
-    official: true
+- language: javascript
+  platform: ctv-web
+  registry: npm
+  name: '@truex/ad-renderer'
+  url: https://www.npmjs.com/package/@truex/ad-renderer
+  install: npm add @truex/ad-renderer
+  version: 1.12.7
+  published: '2025-09-22'
+  first_published: '2020-02-07'
+  release_count: 89
+  license: null
+  official: true
+  description: true[X]'s javascript ad renderer — TruexAdRendererCTV / Desktop / Mobile.
+  note: >-
+    The metadata declares no license, no repository and no homepage. Latest
+    release is eleven months old as of this pass; the integration reference
+    still pins 1.12.5 (2024-03-06).
+- language: javascript
+  platform: vega-os
+  registry: npm
+  name: '@truex/ad-renderer-vega'
+  url: https://www.npmjs.com/package/@truex/ad-renderer-vega
+  install: npm add @truex/ad-renderer-vega
+  version: 0.8.3
+  published: '2026-02-09'
+  first_published: '2025-11-02'
+  release_count: 4
+  official: true
+  description: TrueX Ad Renderer for Vega OS (Amazon's Vega / Fire TV successor platform).
+  note: >-
+    Newest surface in the portfolio and the most recently released package —
+    pre-1.0, four releases since November 2025. Reference app at
+    https://github.com/socialvibe/truex-vega-reference-app.
+- language: javascript
+  platform: web
+  registry: npm
+  name: '@truex/js-ad-client'
+  url: https://www.npmjs.com/package/@truex/js-ad-client
+  install: npm install @truex/js-ad-client
+  version: 0.0.13
+  published: '2020-04-30'
+  first_published: '2020-04-23'
+  release_count: 14
+  official: true
+  description: npm-installable true[X] JSAPI/Client — the packaged form of truex.client.
+  note: >-
+    ABANDONMENT SIGNAL — no release in over six years, still at 0.0.x. The JS Ad
+    API reference does not link it and says only "NPM package available upon
+    request"; the documented distribution is the unpinned CDN script tag below.
+- language: javascript
+  platform: web
+  registry: cdn
+  name: truex.client (static.truex.com)
+  url: https://static.truex.com/js/client.js
+  install: <script src="https://static.truex.com/js/client.js"></script>
+  version: null
+  published: null
+  official: true
+  description: >-
+    The production JavaScript ad client documented in js_ad_api.md, plus a test
+    build at https://static.truex.com/js/client.test.js.
+  note: >-
+    UNPINNED DISTRIBUTION. The documented script URL carries no version segment
+    and no integrity hash, so it floats to whatever the origin is currently
+    serving. There is no CDN metadata endpoint to query and no way for a
+    consumer to determine which build they loaded — recorded as null because it
+    is genuinely unknowable from the outside, which is itself the finding. The
+    host returns 403 to a direct unauthenticated GET (referrer/origin gated).
+- language: javascript
+  platform: ctv-web
+  registry: cdn
+  name: '@truex/ad-renderer via jsDelivr'
+  url: https://cdn.jsdelivr.net/npm/@truex/ad-renderer@1.12.5
+  install: <script src="https://cdn.jsdelivr.net/npm/@truex/ad-renderer@1.12.5"></script>
+  version: 1.12.5
+  published: '2024-03-06'
+  official: true
+  description: >-
+    Alternative script-tag distribution of the CTV/web renderer, documented in
+    the web integration reference.
+  note: >-
+    Version read from the pinned URL in the provider's own DOCS.md. The same
+    reference also offers @latest, which floats. Mirrors the npm package, so the
+    authoritative currency is the npm entry above (1.12.7).
+- language: swift
+  platform: tvos
+  registry: swift-package-manager
+  name: TruexAdRenderer (tvOS Swift Package)
+  url: https://github.com/socialvibe/TruexAdRenderer-tvOS-Swift-Package
+  install: Add package https://github.com/socialvibe/TruexAdRenderer-tvOS-Swift-Package in Xcode (SPM)
+  version: 3.15.3
+  published: '2026-06-15'
+  release_count: 4
+  official: true
+  note: >-
+    Version and date read from the GitHub releases API. Most recently released
+    native renderer in the portfolio.
+- language: swift
+  platform: ios
+  registry: swift-package-manager
+  name: TruexAdRenderer (iOS Swift Package)
+  url: https://github.com/socialvibe/TruexAdRenderer-iOS-Swift-Package
+  install: Add package https://github.com/socialvibe/TruexAdRenderer-iOS-Swift-Package in Xcode (SPM)
+  version: 4.1.0
+  published: '2025-06-10'
+  release_count: 3
+  official: true
+- language: objective-c
+  platform: tvos
+  registry: cocoapods-private-spec-repo
+  name: TruexAdRenderer
+  url: https://github.com/socialvibe/cocoapod-specs
+  install: Add the true[X] spec repo socialvibe/cocoapod-specs, then pod 'TruexAdRenderer'
+  version: 3.15.3
+  published: '2026-06-15'
+  release_count: 86
+  official: true
+  note: >-
+    NOT on CocoaPods trunk — https://trunk.cocoapods.org/api/v1/pods/TruexAdRenderer
+    returns "No pod found with the specified name", so the true[X]-owned spec
+    repo must be added to the Podfile. Version is the highest of 86 podspec
+    directories; the date is the last commit touching that path. Supersedes the
+    3.0.3 recorded in the previous enrichment round, which was twelve minor
+    versions stale.
+- language: objective-c
+  platform: ios
+  registry: cocoapods-private-spec-repo
+  name: TruexAdRenderer-iOS
+  url: https://github.com/socialvibe/cocoapod-specs
+  install: Add the true[X] spec repo socialvibe/cocoapod-specs, then pod 'TruexAdRenderer-iOS'
+  version: 4.1.0
+  published: '2025-06-09'
+  release_count: 8
+  official: true
+- language: java
+  platform: android
+  registry: maven-private
+  name: com.truex:TruexAdRenderer-Android
+  url: https://s3.amazonaws.com/android.truex.com/tar/prod/maven
+  install: >-
+    maven { url "https://s3.amazonaws.com/android.truex.com/tar/prod/maven" }
+    then implementation 'com.truex:TruexAdRenderer-Android:2.10.4'
+  version: 2.10.4
+  published: '2025-08-07'
+  release_count: 8
+  official: true
+  note: >-
+    NOT on Maven Central — a Central search for "truex" returns 0 results. Read
+    from the provider's own maven-metadata.xml (<release>2.10.4</release>,
+    lastUpdated 20250807231656). The integration reference still instructs
+    2.8.2, two releases behind.
+- language: brightscript
+  platform: roku
+  registry: none
+  name: TruexLibrary / TruexAdRenderer (Roku component library)
+  url: https://github.com/socialvibe/truex-roku-integrations
+  install: >-
+    Reference the true[X]-supplied TruexLibrary component library in the channel
+    manifest; obtained from a true[X] contact, not a package registry.
+  version: 1.2.0
+  published: null
+  official: true
+  note: >-
+    Version read from the header of the provider's own Roku DOCS.md ("Version
+    1.2.0"); the repository publishes no tags or releases and there is no
+    registry metadata endpoint, so the release date is genuinely unavailable —
+    recorded as null rather than guessed. Distributed by direct hand-off.
+- language: java
+  platform: react-native / android-tv
+  registry: none
+  name: Tinkerbell (React Native TAR reference integration)
+  url: https://github.com/socialvibe/Tinkerbell
+  install: Clone the reference app; it is a worked example, not a published library.
+  version: null
+  published: '2026-01-22'
+  official: true
+  note: >-
+    Reference application, not a distributable package — no tags, no releases,
+    no registry entry. Date is the last push to the default branch.
+reference_applications:
+- https://github.com/socialvibe/truex-ctv-web-reference-app
+- https://github.com/socialvibe/truex-android-ctv-reference-app
+- https://github.com/socialvibe/truex-roku-reference-app
+- https://github.com/socialvibe/truex-roku-csai-reference-app
+- https://github.com/socialvibe/truex-ios-reference-app
+- https://github.com/socialvibe/truex-tvos-reference-app
+- https://github.com/socialvibe/truex-vega-reference-app
+- https://github.com/socialvibe/truex-ctv-google-ima-ssai-ref-app
+- https://github.com/socialvibe/truex-android-google-ima-ssai-ref-app
+- https://github.com/socialvibe/truex-tvos-google-ad-manager-reference-app
+- https://github.com/socialvibe/truex-roku-google-ad-manager-reference-app
+- https://github.com/socialvibe/truex-google-ima-idvx-simid-ref-app
+summary:
+  official_count: 12
+  registries:
+  - npm
+  - cdn
+  - swift-package-manager
+  - cocoapods-private-spec-repo
+  - maven-private
+  - none
+  on_public_central_registry: 3
+  note: >-
+    Only the three @truex npm packages are resolvable from a public central
+    registry. iOS/tvOS CocoaPods and Android Maven are served from
+    true[X]-owned repositories that must be added by hand, and the Roku library
+    is not distributed through any registry at all.

@@ -1,0 +1,76 @@
+generated: '2026-08-12'
+method: searched
+source: >-
+  Live probes of the Infillion website on 2026-08-12 plus a full read of
+  https://github.com/socialvibe/truex-ads-docs.
+plan_count: 0
+public_pricing: false
+model: enterprise / media-buy
+note: >-
+  HONEST ZERO, NOT AN OMISSION. true[X] and Infillion publish no plans, no
+  price list and no self-service tier. There is no /pricing page — the URL 404s
+  — and no pricing appears in the sitemap, which was walked in full. The
+  commercial motion is a media buy negotiated with a sales team: the Agent
+  Connector product page is a "request a demo" form, the true[X] product page
+  routes to Contact, and every credential in the developer documentation
+  (placement key, application_key, application_secret, reporting api_key) is
+  described as "provided by true[X]" during an integration phase. There is no
+  signup, no free tier and no trial.
+plans: []
+pricing_signals:
+  note: >-
+    The provider does not publish rates, but its own documentation names the
+    units it bills in. These are the economic primitives, not prices.
+  units:
+  - name: engagement
+    detail: >-
+      The billing event. Created when a user meets True Attention — roughly 30
+      seconds spent plus at least one interaction. "This is also known as the
+      'billing event' because this is when the advertiser is billed and the
+      publisher earns their per-unit payment."
+    source: https://github.com/socialvibe/truex-ads-docs/blob/master/js_ad_api.md
+  - name: average_cpe
+    detail: >-
+      Cost per engagement. Reported per placement/day/campaign in the Reporting
+      API alongside advertiser_cost and net_revenue, so a publisher can read its
+      realized economics — but the rate card itself is not published.
+    source: https://github.com/socialvibe/truex-ads-docs/blob/master/reporting_api.md
+  - name: revenue_amount
+    detail: Per-ad revenue to the partner, returned on the ad object itself.
+  - name: currency_amount / currency_label
+    detail: >-
+      Publisher-side virtual currency granted to the user for completing an ad,
+      e.g. "2 Coins" — the reward side of the opt-in model.
+  - name: cap_type
+    values:
+    - units
+    - value_added_units
+    detail: Distinguishes billable units from added-value inventory.
+commercial_terms:
+- name: Subscription Product Agreement
+  url: https://infillion.com/subscription-product-agreement/
+- name: Terms of Use
+  url: https://infillion.com/terms-of-use/
+- name: Ad Content Guidelines
+  url: https://infillion.com/ad-content-guidelines/
+contact_paths:
+- name: Contact / sales
+  url: https://infillion.com/contact/
+- name: Agent Connector demo request
+  url: https://infillion.com/infillion-agent-connector/
+- name: true[X] product page
+  url: https://infillion.com/products/infillion-truex/
+x-evidence:
+- url: https://infillion.com/pricing/
+  http_status: 404
+  fetched: '2026-08-12'
+- url: https://infillion.com/page-sitemap.xml
+  http_status: 200
+  note: Walked in full; contains no pricing page.
+  fetched: '2026-08-12'
+- url: https://infillion.com/contact/
+  http_status: 200
+  fetched: '2026-08-12'
+- url: https://infillion.com/subscription-product-agreement/
+  http_status: 200
+  fetched: '2026-08-12'
