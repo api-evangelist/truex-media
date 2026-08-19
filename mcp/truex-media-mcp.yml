@@ -2,14 +2,12 @@ generated: '2026-08-12'
 method: probed
 status: published
 source: https://infillion.com/infillion-agent-connector/
-attribution: >-
-  This MCP server is operated by Infillion, the parent company. true[X] is a
-  video advertising product inside Infillion (the Agent Connector product page
-  lists Truex among the media products the execution layer buys), and this
-  repository already carries https://infillion.com as its canonical Website —
-  Infillion is not separately profiled in the catalog. The server is recorded
-  here as a parent-brand agent surface that fronts true[X] media, not as a
-  true[X]-branded endpoint. It is NOT served from a truex.com host.
+attribution: This MCP server is operated by Infillion, the parent company. true[X] is a video advertising
+  product inside Infillion (the Agent Connector product page lists Truex among the media products the
+  execution layer buys), and this repository already carries https://infillion.com as its canonical Website
+  — Infillion is not separately profiled in the catalog. The server is recorded here as a parent-brand
+  agent surface that fronts true[X] media, not as a true[X]-branded endpoint. It is NOT served from a
+  truex.com host.
 server:
   name: Infillion Agent Connector
   vendor: Infillion
@@ -17,17 +15,14 @@ server:
   url: https://mcp.infillion.com/mcp
   sse_url: https://mcp.infillion.com/sse
   base: https://mcp.infillion.com
-  description: >-
-    Infillion Agent Connector is marketed as an agent-native media execution
-    layer built on the Model Context Protocol, letting AI systems plan, buy and
-    optimize media directly rather than through human workflows.
+  description: Infillion Agent Connector is marketed as an agent-native media execution layer built on
+    the Model Context Protocol, letting AI systems plan, buy and optimize media directly rather than through
+    human workflows.
 authorization:
   gated: true
   scheme: OAuth 2.1 bearer
   realm: Infillion Gateway
-  challenge: >-
-    WWW-Authenticate: Bearer realm="Infillion Gateway",
-    resource_metadata="https://mcp.infillion.com/.well-known/oauth-protected-resource/mcp"
+  challenge: 'WWW-Authenticate: Bearer realm="Infillion Gateway", resource_metadata="https://mcp.infillion.com/.well-known/oauth-protected-resource/mcp"'
   authorization_server: https://mcp.infillion.com
   authorization_endpoint: https://mcp.infillion.com/oauth/authorize
   token_endpoint: https://mcp.infillion.com/oauth/token
@@ -44,16 +39,12 @@ authorization:
   - well-known/truex-media-oauth-authorization-server.json
   - well-known/truex-media-oauth-protected-resource.json
 tools: []
-tools_note: >-
-  NOT RECORDED — the live tool list is auth-gated. An anonymous
-  POST {"jsonrpc":"2.0","id":1,"method":"tools/list"} to
-  https://mcp.infillion.com/ and to /mcp returns HTTP 401
-  {"error": "Missing Authorization header"} with a Bearer challenge. Infillion
-  publishes no public tool reference and /llms.txt on the MCP host is itself
-  401-gated, so there is no unauthenticated source for tool names, descriptions
-  or inputSchemas. Nothing is guessed here. Retrieving the real tool set
-  requires completing the OAuth authorization-code flow against
-  https://mcp.infillion.com/oauth/authorize with a registered client.
+tools_note: 'NOT RECORDED — the live tool list is auth-gated. An anonymous POST {"jsonrpc":"2.0","id":1,"method":"tools/list"}
+  to https://mcp.infillion.com/ and to /mcp returns HTTP 401 {"error": "Missing Authorization header"}
+  with a Bearer challenge. Infillion publishes no public tool reference and /llms.txt on the MCP host
+  is itself 401-gated, so there is no unauthenticated source for tool names, descriptions or inputSchemas.
+  Nothing is guessed here. Retrieving the real tool set requires completing the OAuth authorization-code
+  flow against https://mcp.infillion.com/oauth/authorize with a registered client.'
 health:
   url: https://mcp.infillion.com/health
   status: 200
@@ -67,7 +58,7 @@ x-evidence:
   http_status: 401
   fetched: '2026-08-12'
 - url: https://mcp.infillion.com/mcp
-  method: 'POST tools/list'
+  method: POST tools/list
   http_status: 401
   fetched: '2026-08-12'
 - url: https://mcp.infillion.com/.well-known/oauth-authorization-server
@@ -86,3 +77,10 @@ x-evidence:
   method: GET
   http_status: 200
   fetched: '2026-08-12'
+deployment:
+  mode: remote
+  endpoint: https://mcp.infillion.com/mcp
+  verified: probed
+  probe: wall
+  checked: '2026-08-12'
+  source: catalog MCP census
