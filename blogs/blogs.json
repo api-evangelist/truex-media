@@ -2,20 +2,20 @@
   "repo": "truex-media",
   "feeds": [
     {
-      "source": "https://github.com/socialvibe/truex-mobile-integrations/wiki",
-      "feed_url": "https://github.com/socialvibe/truex-mobile-integrations/wiki",
+      "source": "https://github.com/socialvibe",
+      "feed_url": "https://github.com/socialvibe",
       "title": "",
       "saved": 0,
       "method": "none"
     },
     {
-      "source": "https://github.com/socialvibe",
-      "feed_url": "https://github.com/socialvibe",
+      "source": "https://github.com/socialvibe/truex-mobile-integrations/wiki",
+      "feed_url": "https://github.com/socialvibe/truex-mobile-integrations/wiki",
       "title": "",
       "saved": 0,
       "method": "none"
     }
   ],
   "post_count": 0,
-  "fetched": "2026-08-30T22:33:40Z"
+  "fetched": "2026-09-06T19:17:18Z"
 }
