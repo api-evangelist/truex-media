@@ -1,0 +1,29 @@
+# Front Door AI Index — truex-media — 2026-09-17
+# AI vocabulary counted on the provider's root page. Generated; do not edit.
+# `score` is null unless ownership is `own` — see front_door_ai.py.
+front_door_ai:
+  slug: truex-media
+  lexicon_version: '1.0'
+  probed_at: '2026-09-17'
+  host: infillion.com
+  final_host: infillion.com
+  ownership: own
+  owner: truex-media
+  shares_host_with: null
+  inherited_from: null
+  verdict: scored
+  score: 7
+  host_score: 7
+  density: 20.47
+  words: 342
+  tiers:
+    agentic: 4
+    core: 3
+    model: 0
+  ambiguous: 3
+  top_terms:
+    AI: 3
+    agentic: 3
+    agent: 2
+    intelligence: 1
+    prompts: 1
